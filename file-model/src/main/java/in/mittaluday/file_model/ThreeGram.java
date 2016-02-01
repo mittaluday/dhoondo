@@ -2,6 +2,9 @@ package in.mittaluday.file_model;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * A Three Gram contains a list of 
  * 3 Tokens
@@ -9,6 +12,8 @@ import java.util.List;
  * @author udaymittal
  *
  */
+@Entity
+@Table
 public class ThreeGram{
 	List<Token> tokenList;
 
