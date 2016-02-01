@@ -9,18 +9,18 @@ import java.util.List;
  * @author udaymittal
  *
  */
-public class ThreeGram{
-	List<Token> tokenList;
+public class ThreeGramFrequencies{
+	List<TokenFrequency> tokenList;
 
-	public ThreeGram(List<Token> tokenList) {
+	public ThreeGramFrequencies(List<TokenFrequency> tokenList) {
 		this.tokenList = tokenList;
 	}
 
-	public List<Token> getTokenList() {
+	public List<TokenFrequency> getTokenList() {
 		return tokenList;
 	}
 
-	public void setTokenList(List<Token> tokenList) {
+	public void setTokenList(List<TokenFrequency> tokenList) {
 		this.tokenList = tokenList;
 	}
 	
@@ -31,8 +31,8 @@ public class ThreeGram{
 	
 	@Override
 	public boolean equals(Object obj) {
-		ThreeGram tobj = (ThreeGram) obj;
-		List<Token> argThreeGramTokens = tobj.getTokenList();
+		ThreeGramFrequencies tobj = (ThreeGramFrequencies) obj;
+		List<TokenFrequency> argThreeGramTokens = tobj.getTokenList();
 		for(int i=0; i<tokenList.size(); i++){
 			if(tokenList.get(i).getContent()
 					.equals(argThreeGramTokens.get(i).getContent())){
@@ -48,7 +48,7 @@ public class ThreeGram{
 	@Override
 	public int hashCode() {
 		int hashcode = 0;
-		for (Token token : tokenList) {
+		for (TokenFrequency token : tokenList) {
 			hashcode += token.getContent().hashCode();
 		}
 		return hashcode;

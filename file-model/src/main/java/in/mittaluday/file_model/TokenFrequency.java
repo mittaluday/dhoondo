@@ -6,11 +6,31 @@ package in.mittaluday.file_model;
  * @author udaymittal
  *
  */
-public class Token {
+public class TokenFrequency {
+	Integer id;
 	String content;
+	Integer frequency;
 	
-	public Token(String content){
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency) {
+		this.frequency = frequency;
+	}
+
+
+	public TokenFrequency(String content, Integer frequency){
 		this.content = content;
+		this.frequency = frequency;
 	}
 	
 	public String getContent() {
@@ -28,7 +48,7 @@ public class Token {
 	
 	@Override
 	public boolean equals(Object obj) {
-		Token tobj = (Token) obj;
+		TokenFrequency tobj = (TokenFrequency) obj;
 		if(this.content.equals(tobj.content)){
 			return true;
 		}
