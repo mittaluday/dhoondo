@@ -2,8 +2,6 @@ package in.mittaluday.crawler;
 
 import java.io.File;
 
-import org.apache.commons.compress.compressors.FileNameUtil;
-
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -21,7 +19,6 @@ public class MyCrawlerController {
         try {
 			initializeDumpDirectory(config);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.exit(0);
 		}
@@ -61,7 +58,7 @@ public class MyCrawlerController {
         config.setCrawlStorageFolder(CrawlerUtilities.CRAWL_FOLDER);
         config.setMaxDepthOfCrawling(-1);
         config.setUserAgentString(CrawlerUtilities.USER_STRING);
-        config.setPolitenessDelay(1000);
+        config.setPolitenessDelay(550);
         config.setResumableCrawling(false);
         config.setShutdownOnEmptyQueue(true);
         config.setIncludeBinaryContentInCrawling(false);

@@ -5,13 +5,13 @@ import java.util.List;
 
 public class ThreeGramSingleton {
 
-	HashMap<String,Integer> threeGramFrequency;
+	private HashMap<String,Integer> threeGramFrequency;
 	
 	private static ThreeGramSingleton threegramsingleton = new ThreeGramSingleton( );
 	
 	private ThreeGramSingleton()
 	{
-		HashMap<String,Integer> threeGramFrequency=new HashMap();
+		threeGramFrequency=new HashMap<String, Integer>();
 	}
 	public static ThreeGramSingleton getInstance()
 	{
