@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+   <class name="in.mittaluday.file_model.FileIndex" table="file_index">
+      <id name="id" type="int" column="id">
+         <generator class="native"/>
+      </id>
+	  <property name="fileName" column="filename" type="string"/>
+	  <property name="dateOfLastUpdate" column="date_of_last_update" type="timestamp"/>
+	  <property name="dateOfLastIndex" column="date_of_last_index" type="timestamp"/>
+	  <property name="numberOfTokens" column="number_of_tokens" type="int"/>
+	  <property name="subdomain" column="subdomain" type="string"/>
+   </class>
+</hibernate-mapping>

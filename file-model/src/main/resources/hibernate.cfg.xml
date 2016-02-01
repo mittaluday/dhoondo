@@ -25,6 +25,8 @@
 
    <!-- List of XML mapping files -->
    <mapping resource="TokenFrequency.hbm.xml"/>
+   <mapping resource="ThreeGramFrequency.hbm.xml"/>
+   <mapping resource="FileIndex.hbm.xml"/>
 
 </session-factory>
 </hibernate-configuration>
