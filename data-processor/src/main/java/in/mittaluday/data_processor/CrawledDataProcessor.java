@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 
 public class CrawledDataProcessor {
 	
-	int uniquePagesCrawled;
-	FileTokenizer fileTokenizer;
+	private int uniquePagesCrawled;
+	private FileTokenizer fileTokenizer;
 	
 	public CrawledDataProcessor(){
 		fileTokenizer = new FileTokenizer();
@@ -23,8 +23,9 @@ public class CrawledDataProcessor {
 			try {
 				fileTokenizer.tokenizeFile();
 				fileTokenizer.computeThreeGrams(fileTokenizer.getListOfTokens());
-				fileTokenizer.printTokens();
-				fileTokenizer.printThreegrams();
+				TokenSingleton.getInstance().addTokenList(fileTokenizer.getListOfTokens());
+				ThreeGramSingleton.getInstance().addThreeGramList(fileTokenizer.getListOfThreeGrams());
+				
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}			
