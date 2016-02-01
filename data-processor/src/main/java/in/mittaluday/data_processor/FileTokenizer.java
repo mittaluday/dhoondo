@@ -16,11 +16,11 @@ import java.util.Scanner;
 
 public class FileTokenizer {
 	
-	File file;
-	HashMap<String, Integer>tokenCount;
-	ArrayList<String> listOfTokens;
-	ArrayList<String> listofThreeGrams;
-	HashMap<String, Integer> threeGramsFrequency;
+	private File file;
+	private HashMap<String, Integer>tokenCount;
+	private ArrayList<String> listOfTokens;
+	private ArrayList<String> listofThreeGrams;
+	private HashMap<String, Integer> threeGramsFrequency;
 
 	public FileTokenizer(){
 		tokenCount = new HashMap<String, Integer>();
