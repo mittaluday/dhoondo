@@ -60,18 +60,33 @@ public class MyUCICrawler extends WebCrawler {
 			}                       
          }
     }
-
+     
 	private synchronized void addToDataDumpFile(String text, String url) throws IOException {
-		File dumpFile = new File(CrawlerUtilities.getDumpFileName());		
+		int dumpFileNumber = getDumpFileNumber();
+		File dumpFile = new File(getDumpFileName(dumpFileNumber));	
+		dumpFile.createNewFile();
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
 		out.println(text);	
 		out.flush();
 		out.close();
+		
+		// TODO: add file details to model-repository
+		// Filename, date of creation, date of indexing, subdomain, number of tokens
+		String subdomain = CrawlerUtilities.parseURLForSubDomain(url);
+		
+	}
+
+	private int getDumpFileNumber() {
+		return new File(CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER).list().length+1;
 	}
 
 	private void addNewURLHeader(PrintWriter out, String url) {
-		out.println(CrawlerUtilities.NEW_URL_BREAK + CrawlerUtilities.USER_STRING + CrawlerUtilities.NEW_URL_BREAK);
+//		out.println(CrawlerUtilities.NEW_URL_BREAK + CrawlerUtilities.USER_STRING + CrawlerUtilities.NEW_URL_BREAK);
 		out.println(url);
+	}
+	
+	public String getDumpFileName(int dumpFileNumber) {
+		return CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER+"/"+CrawlerUtilities.DUMP_FILE+"_"+dumpFileNumber+".txt";
 	}
 }
