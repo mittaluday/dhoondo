@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,7 @@ public class MyCrawlerController {
 
 	private static void setCrawlConfigurations(CrawlConfig config, Properties crawlerProperties) {		
         config.setCrawlStorageFolder(crawlerProperties.getProperty("CRAWL_FOLDER"));
-        config.setMaxDepthOfCrawling(-1);
+        config.setMaxDepthOfCrawling(Integer.parseInt(crawlerProperties.getProperty("CRAWLING_DEPTH")));
         config.setUserAgentString(crawlerProperties.getProperty("USER_STRING"));
         config.setPolitenessDelay(Integer.parseInt(crawlerProperties.getProperty("POLITENESS_DELAY")));
         config.setResumableCrawling(false);
