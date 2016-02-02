@@ -1,6 +1,8 @@
 package in.mittaluday.crawler;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -9,15 +11,21 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class MyCrawlerController {
+	
+	
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws IOException {
+		
+		
+		CrawlerGetProperties properties = new CrawlerGetProperties();
+		Properties crawlerProperties = properties.getPropValues();
+		
         int numberOfCrawlers = 10;
 
         CrawlConfig config = new CrawlConfig();
-        setCrawlConfigurations(config);
+        setCrawlConfigurations(config, crawlerProperties);
         try {
-			initializeDumpDirectory(config);
+			initializeDumpDirectory(config, crawlerProperties);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.exit(0);
@@ -38,7 +46,7 @@ public class MyCrawlerController {
 	         * URLs that are fetched and then the crawler starts following links
 	         * which are found in these pages
 	         */
-	    	controller.addSeed(CrawlerUtilities.SEED_URL);	    	
+	    	controller.addSeed(crawlerProperties.getProperty("SEED_URL"));	    	
 	    	
 	        /*
 	         * Start the crawl. This is a blocking operation, meaning that your code
@@ -54,19 +62,19 @@ public class MyCrawlerController {
 
 	}
 
-	private static void setCrawlConfigurations(CrawlConfig config) {		
-        config.setCrawlStorageFolder(CrawlerUtilities.CRAWL_FOLDER);
+	private static void setCrawlConfigurations(CrawlConfig config, Properties crawlerProperties) {		
+        config.setCrawlStorageFolder(crawlerProperties.getProperty("CRAWL_FOLDER"));
         config.setMaxDepthOfCrawling(-1);
-        config.setUserAgentString(CrawlerUtilities.USER_STRING);
-        config.setPolitenessDelay(550);
+        config.setUserAgentString(crawlerProperties.getProperty("USER_STRING"));
+        config.setPolitenessDelay(Integer.parseInt(crawlerProperties.getProperty("POLITENESS_DELAY")));
         config.setResumableCrawling(false);
         config.setShutdownOnEmptyQueue(true);
         config.setIncludeBinaryContentInCrawling(false);
         config.setProcessBinaryContentInCrawling(false);       
 	}
 	
-	private static void initializeDumpDirectory(CrawlConfig config) throws Exception {
-	    File dumpFolder = new File(config.getCrawlStorageFolder() + CrawlerUtilities.DUMP_FOLDER);
+	private static void initializeDumpDirectory(CrawlConfig config, Properties crawlerProperties) throws Exception {
+	    File dumpFolder = new File(config.getCrawlStorageFolder() + crawlerProperties.getProperty("DUMP_FOLDER"));
 	    if (!dumpFolder.exists()) {
 	      if (!dumpFolder.mkdir()) {
 	        throw new Exception("Failed creating the frontier folder: " + dumpFolder.getAbsolutePath());

@@ -2,21 +2,11 @@ package in.mittaluday.crawler;
 
 public class CrawlerUtilities {
 
-	public static final String CRAWL_FOLDER = "C:/data/crawl/root";
-	public static final String DUMP_FOLDER = "/dump";
-	public static final String DUMP_FILE = "dumpfile";
-	public static final String SUBDOMAINS = "Subdomains.txt";
-	
-	public static final String NEW_URL_BREAK = "!@#$%^";	
-	
-	public static final String USER_STRING = "IR_W16_WebCrawler_14563364_70969866_95626832";
-	public static final String SEED_URL = "http://www.ics.uci.edu/";
-	public static final String SEED_DOMAIN = "ics.uci.edu";
-	
-	
-	static public String getSubdomainFileName() {
-		return CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.CRAWL_FOLDER+"/"+CrawlerUtilities.SUBDOMAINS;
-	}
+//
+//	
+//	static public String getSubdomainFileName() {
+//		return CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.CRAWL_FOLDER+"/"+CrawlerUtilities.SUBDOMAINS;
+//	}
 	
 	/*
 	 * This method parses the domain name, retrieves the subdomain

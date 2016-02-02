@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,8 @@ public class MyUCICrawler extends WebCrawler {
 
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
+    
+    
     
     /**
      * This method receives two parameters. The first parameter is the page
@@ -31,7 +34,15 @@ public class MyUCICrawler extends WebCrawler {
      @Override
      public boolean shouldVisit(Page referringPage, WebURL url) {
          String href = url.getURL().toLowerCase();
-         return !FILTERS.matcher(href).matches() && href.contains(CrawlerUtilities.SEED_DOMAIN);
+         CrawlerGetProperties properties = new CrawlerGetProperties();
+ 	     Properties crawlerProperties = null;
+		try {
+			crawlerProperties = properties.getPropValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         return !FILTERS.matcher(href).matches() && href.contains(crawlerProperties.getProperty("SEED_DOMAIN"));
      }
 
      /**
@@ -40,6 +51,15 @@ public class MyUCICrawler extends WebCrawler {
       */
      @Override
      public void visit(Page page) {
+    	 CrawlerGetProperties properties = new CrawlerGetProperties();
+ 	     Properties crawlerProperties = null;
+		try {
+			crawlerProperties = properties.getPropValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	 
          String url = page.getWebURL().getURL();
          System.out.println("URL: " + url);
 
@@ -54,16 +74,20 @@ public class MyUCICrawler extends WebCrawler {
              System.out.println("Number of outgoing links: " + links.size());
              
              try {
-				addToDataDumpFile(text.trim(), url);
+				addToDataDumpFile(text.trim(), url, crawlerProperties);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}                       
          }
     }
      
-	private synchronized void addToDataDumpFile(String text, String url) throws IOException {
-		int dumpFileNumber = getDumpFileNumber();
-		File dumpFile = new File(getDumpFileName(dumpFileNumber));	
+	private synchronized void addToDataDumpFile(String text, String url, Properties crawlerProperties) throws IOException {
+		int dumpFileNumber = getDumpFileNumber(crawlerProperties.getProperty("CRAWL_FOLDER"),
+												crawlerProperties.getProperty("DUMP_FOLDER"));
+		
+		File dumpFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
+																crawlerProperties.getProperty("DUMP_FOLDER"),
+																crawlerProperties.getProperty("DUMP_FILE")));	
 		dumpFile.createNewFile();
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
@@ -77,8 +101,8 @@ public class MyUCICrawler extends WebCrawler {
 		
 	}
 
-	private int getDumpFileNumber() {
-		return new File(CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER).list().length+1;
+	private int getDumpFileNumber(String crawlFolder, String dumpFolder) {
+		return new File(crawlFolder+dumpFolder).list().length+1;
 	}
 
 	private void addNewURLHeader(PrintWriter out, String url) {
@@ -86,7 +110,7 @@ public class MyUCICrawler extends WebCrawler {
 		out.println(url);
 	}
 	
-	public String getDumpFileName(int dumpFileNumber) {
-		return CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER+"/"+CrawlerUtilities.DUMP_FILE+"_"+dumpFileNumber+".txt";
+	public String getDumpFileName(int dumpFileNumber, String crawlFolder, String dumpFolder, String dumpFile) {
+		return crawlFolder+dumpFolder+"/"+dumpFile+"_"+dumpFileNumber+".txt";
 	}
 }
