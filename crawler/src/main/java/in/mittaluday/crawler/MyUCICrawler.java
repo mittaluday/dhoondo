@@ -9,6 +9,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -20,7 +23,8 @@ public class MyUCICrawler extends WebCrawler {
             + "|png|mp3|mp3|zip|gz))$");
     
     
-    
+    private static Logger logger = LoggerFactory.getLogger(MyUCICrawler.class);
+
     /**
      * This method receives two parameters. The first parameter is the page
      * in which we have discovered this new url and the second parameter is
@@ -61,7 +65,7 @@ public class MyUCICrawler extends WebCrawler {
 		}
     	 
          String url = page.getWebURL().getURL();
-         System.out.println("URL: " + url);
+         logger.info(crawlerProperties.getProperty("USER_STRING")+"URL: " + url);
 
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -69,9 +73,9 @@ public class MyUCICrawler extends WebCrawler {
              String html = htmlParseData.getHtml();
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
-             System.out.println("Text length: " + text.length());
-             System.out.println("Html length: " + html.length());
-             System.out.println("Number of outgoing links: " + links.size());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
              
              try {
 				addToDataDumpFile(text.trim(), url, crawlerProperties);

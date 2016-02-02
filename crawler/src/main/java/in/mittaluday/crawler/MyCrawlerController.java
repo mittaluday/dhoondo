@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -11,14 +15,16 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class MyCrawlerController {
-	
+
 	
 
 	public static void main(String[] args) throws IOException {
-		
-		
+	    Logger logger = LoggerFactory.getLogger(MyCrawlerController.class);
+
 		CrawlerGetProperties properties = new CrawlerGetProperties();
 		Properties crawlerProperties = properties.getPropValues();
+		
+		String logSeq = crawlerProperties.getProperty("USER_STRING");
 		
         int numberOfCrawlers = 10;
 
@@ -55,7 +61,7 @@ public class MyCrawlerController {
 	    	long startTime = System.currentTimeMillis();
 	        controller.start(MyUCICrawler.class, numberOfCrawlers);
 	        long endTime = System.currentTimeMillis();
-	        System.out.println("Total time for crawling: " + (endTime-startTime));
+	        logger.info(logSeq+ "Total time for crawling: " + (endTime-startTime));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -76,7 +82,7 @@ public class MyCrawlerController {
 	private static void initializeDumpDirectory(CrawlConfig config, Properties crawlerProperties) throws Exception {
 	    File dumpFolder = new File(config.getCrawlStorageFolder() + crawlerProperties.getProperty("DUMP_FOLDER"));
 	    if (!dumpFolder.exists()) {
-	      if (!dumpFolder.mkdir()) {
+	      if (!dumpFolder.mkdirs()) {
 	        throw new Exception("Failed creating the frontier folder: " + dumpFolder.getAbsolutePath());
 	      }
 	    } else {
