@@ -19,7 +19,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class MyUCICrawler extends WebCrawler {
 
-    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
+    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|php"
             + "|png|mp3|mp3|zip|gz))$");
     
     
