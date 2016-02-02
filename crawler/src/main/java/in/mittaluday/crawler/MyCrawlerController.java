@@ -76,7 +76,7 @@ public class MyCrawlerController {
 	private static void initializeDumpDirectory(CrawlConfig config, Properties crawlerProperties) throws Exception {
 	    File dumpFolder = new File(config.getCrawlStorageFolder() + crawlerProperties.getProperty("DUMP_FOLDER"));
 	    if (!dumpFolder.exists()) {
-	      if (!dumpFolder.mkdir()) {
+	      if (!dumpFolder.mkdirs()) {
 	        throw new Exception("Failed creating the frontier folder: " + dumpFolder.getAbsolutePath());
 	      }
 	    } else {
