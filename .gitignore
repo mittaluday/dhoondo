@@ -16,3 +16,4 @@ hs_err_pid*
 /crawler/.classpath
 /crawler/data
 /crawler/log
+/crawler/target
