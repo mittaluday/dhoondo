@@ -8,12 +8,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import in.mittaluday.file_repo.FileIndexRepository;
 import in.mittaluday.file_repo.ThreeGramFrequencyRepository;
 import in.mittaluday.file_repo.TokenFrequencyRepository;
 
 public class CrawledDataProcessor {
 	
+	
+	Logger logger = LoggerFactory.getLogger(CrawledDataProcessor.class);
+
 	private int uniquePagesCrawled;
 	private FileTokenizer fileTokenizer;
 	private FileIndexRepository fileIndexRepo;
@@ -81,15 +87,37 @@ public class CrawledDataProcessor {
 	
 	private void saveTokenAggregatesToRepository(){
 		HashMap<String, Integer> tokenAggregates = TokenSingleton.getTokenFrequencySingleton();
+		int counter =0;
 		for (String token : tokenAggregates.keySet()) {
-			tokenRepo.addTokenFrequency(token, tokenAggregates.get(token));
+			try{
+				tokenRepo.addTokenFrequency(token, tokenAggregates.get(token));
+			}
+			catch (Exception e){
+				logger.error(e.getStackTrace().toString());
+				logger.error("Token lost");
+			}
+			if(counter%100 == 0){
+				logger.info("Saved "+ String.valueOf(counter) + "tokens");
+			}
+			counter+=1;
 		}
 	}
 	
 	private void saveThreeGramAggregatesToRepository(){
 		HashMap<String, Integer> threeGramAggregates = ThreeGramSingleton.getThreeGramFrequencySingleton();
+		int counter = 0;
 		for(String threeGram : threeGramAggregates.keySet()){
-			threeGramRepo.addThreeGramFrequency(threeGram, threeGramAggregates.get(threeGram));
+			try{
+				threeGramRepo.addThreeGramFrequency(threeGram, threeGramAggregates.get(threeGram));
+			}
+			catch (Exception e){
+				logger.error(e.getStackTrace().toString());
+				logger.error("Threegram lost");
+			}
+			if(counter%100 == 0){
+				logger.info("Saved "+ String.valueOf(counter) + "tokens");
+			}
+			counter+=1;
 		}
 	}
 
