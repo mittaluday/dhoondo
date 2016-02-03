@@ -11,15 +11,17 @@ import in.mittaluday.file_model.ThreeGramFrequency;
 public class ThreeGramFrequencyRepository {
 	private static SessionFactory factory;
 
-	// BoilerPlate
-	public static void main(String[] args) {
-
+	public ThreeGramFrequencyRepository(){
 		try {
 			factory = new Configuration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
 			System.err.println("Failed to create sessionFactory object." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
+	}
+	
+	// BoilerPlate
+	public static void main(String[] args) {
 
 		ThreeGramFrequencyRepository tfrepo = new ThreeGramFrequencyRepository();
 

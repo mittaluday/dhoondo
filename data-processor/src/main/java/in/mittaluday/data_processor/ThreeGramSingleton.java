@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ThreeGramSingleton {
 
-	private HashMap<String,Integer> threeGramFrequency;
+	private static HashMap<String,Integer> threeGramFrequency;
 	
 	private static ThreeGramSingleton threegramsingleton = new ThreeGramSingleton( );
 	
@@ -17,6 +17,11 @@ public class ThreeGramSingleton {
 	{
 		return threegramsingleton;
 	}
+	
+	public static HashMap<String, Integer> getThreeGramFrequencySingleton(){
+		return threeGramFrequency;
+	}
+	
 	public void addThreeGramList(List<String> threeGramList)
 	{
 		for (int i = 0; i < threeGramList.size(); i++) {
