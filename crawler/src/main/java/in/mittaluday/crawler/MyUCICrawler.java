@@ -97,12 +97,6 @@ public class MyUCICrawler extends WebCrawler {
 		addNewURLHeader(out,url);
 		out.println(text);	
 		out.flush();
-		out.close();
-		
-		// TODO: add file details to model-repository
-		// Filename, date of creation, date of indexing, subdomain, number of tokens
-		String subdomain = CrawlerUtilities.parseURLForSubDomain(url);
-		
 	}
 
 	private int getDumpFileNumber(String crawlFolder, String dumpFolder) {
