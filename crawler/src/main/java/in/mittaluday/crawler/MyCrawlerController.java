@@ -51,7 +51,8 @@ public class MyCrawlerController {
 	         * URLs that are fetched and then the crawler starts following links
 	         * which are found in these pages
 	         */
-	    	controller.addSeed(crawlerProperties.getProperty("SEED_URL"));	    	
+	    	controller.addSeed(crawlerProperties.getProperty("SEED_URL"));
+	    	controller.addSeed("http://www.ics.uci.edu/~lopes/teaching/cs221W16/");
 	    	
 	        /*
 	         * Start the crawl. This is a blocking operation, meaning that your code
