@@ -22,6 +22,7 @@ public class MyUCICrawler extends WebCrawler {
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|php"
             + "|png|mp3|mp3|zip|gz))$");
     
+    private static int numFilesinDumpFolder = 1;    
     
     private static Logger logger = LoggerFactory.getLogger(MyUCICrawler.class);
 
@@ -46,7 +47,7 @@ public class MyUCICrawler extends WebCrawler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("###Seed domain? = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
+		logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
          return !FILTERS.matcher(href).matches() && href.contains(crawlerProperties.getProperty("SEED_DOMAIN"));
      }
 
@@ -94,14 +95,16 @@ public class MyUCICrawler extends WebCrawler {
 																crawlerProperties.getProperty("DUMP_FOLDER"),
 																crawlerProperties.getProperty("DUMP_FILE")));	
 		dumpFile.createNewFile();
+//		System.out.println("Crawled " + url + " created file " + dumpFile.getAbsolutePath());
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
 		out.println(text);	
 		out.flush();
 	}
 
-	private int getDumpFileNumber(String crawlFolder, String dumpFolder) {
-		return new File(crawlFolder+dumpFolder).list().length+1;
+	private synchronized int getDumpFileNumber(String crawlFolder, String dumpFolder) {
+//		return new File(crawlFolder+dumpFolder).list().length+1;
+		return numFilesinDumpFolder++;
 	}
 
 	private void addNewURLHeader(PrintWriter out, String url) {
