@@ -11,16 +11,18 @@ import in.mittaluday.file_model.TokenFrequency;
 public class TokenFrequencyRepository {
    private static SessionFactory factory; 
    
-   //BoilerPlate
-   public static void main(String[] args) {
-	   
+   public TokenFrequencyRepository(){
       try{
          factory = new Configuration().configure().buildSessionFactory();
       }catch (Throwable ex) { 
          System.err.println("Failed to create sessionFactory object." + ex);
          throw new ExceptionInInitializerError(ex); 
       }
-
+   }
+   
+   //BoilerPlate
+   public static void main(String[] args) {
+	 
       TokenFrequencyRepository tfrepo = new TokenFrequencyRepository();
 
       /* Add few employee records in database */

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TokenSingleton {
  
-	private HashMap<String,Integer> tokenFrequency;
+	private static HashMap<String,Integer> tokenFrequency;
 	
 	private static TokenSingleton tokensingleton = new TokenSingleton( );
 	
@@ -16,6 +16,10 @@ public class TokenSingleton {
 	public static TokenSingleton getInstance()
 	{
 		return tokensingleton;
+	}
+	
+	public static HashMap<String, Integer> getTokenFrequencySingleton(){
+		return tokenFrequency;
 	}
 	
 	public void addTokenList(List<String> tokenList)

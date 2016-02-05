@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -15,9 +19,13 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class MyUCICrawler extends WebCrawler {
 
-    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
+    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|php"
             + "|png|mp3|mp3|zip|gz))$");
     
+    private static int numFilesinDumpFolder = 1;    
+    
+    private static Logger logger = LoggerFactory.getLogger(MyUCICrawler.class);
+
     /**
      * This method receives two parameters. The first parameter is the page
      * in which we have discovered this new url and the second parameter is
@@ -31,7 +39,16 @@ public class MyUCICrawler extends WebCrawler {
      @Override
      public boolean shouldVisit(Page referringPage, WebURL url) {
          String href = url.getURL().toLowerCase();
-         return !FILTERS.matcher(href).matches() && href.contains(CrawlerUtilities.SEED_DOMAIN);
+         CrawlerGetProperties properties = new CrawlerGetProperties();
+ 	     Properties crawlerProperties = null;
+		try {
+			crawlerProperties = properties.getPropValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
+         return !FILTERS.matcher(href).matches() && href.contains(crawlerProperties.getProperty("SEED_DOMAIN"));
      }
 
      /**
@@ -40,8 +57,17 @@ public class MyUCICrawler extends WebCrawler {
       */
      @Override
      public void visit(Page page) {
+    	 CrawlerGetProperties properties = new CrawlerGetProperties();
+ 	     Properties crawlerProperties = null;
+		try {
+			crawlerProperties = properties.getPropValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	 
          String url = page.getWebURL().getURL();
-         System.out.println("URL: " + url);
+         logger.info(crawlerProperties.getProperty("USER_STRING")+"URL: " + url);
 
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -49,36 +75,36 @@ public class MyUCICrawler extends WebCrawler {
              String html = htmlParseData.getHtml();
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
-             System.out.println("Text length: " + text.length());
-             System.out.println("Html length: " + html.length());
-             System.out.println("Number of outgoing links: " + links.size());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
+             logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
              
              try {
-				addToDataDumpFile(text.trim(), url);
+				addToDataDumpFile(text.trim(), url, crawlerProperties);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}                       
          }
     }
      
-	private synchronized void addToDataDumpFile(String text, String url) throws IOException {
-		int dumpFileNumber = getDumpFileNumber();
-		File dumpFile = new File(getDumpFileName(dumpFileNumber));	
+	private synchronized void addToDataDumpFile(String text, String url, Properties crawlerProperties) throws IOException {
+		int dumpFileNumber = getDumpFileNumber(crawlerProperties.getProperty("CRAWL_FOLDER"),
+												crawlerProperties.getProperty("DUMP_FOLDER"));
+		
+		File dumpFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
+																crawlerProperties.getProperty("DUMP_FOLDER"),
+																crawlerProperties.getProperty("DUMP_FILE")));	
 		dumpFile.createNewFile();
+//		System.out.println("Crawled " + url + " created file " + dumpFile.getAbsolutePath());
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
 		out.println(text);	
 		out.flush();
-		out.close();
-		
-		// TODO: add file details to model-repository
-		// Filename, date of creation, date of indexing, subdomain, number of tokens
-		String subdomain = CrawlerUtilities.parseURLForSubDomain(url);
-		
 	}
 
-	private int getDumpFileNumber() {
-		return new File(CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER).list().length+1;
+	private synchronized int getDumpFileNumber(String crawlFolder, String dumpFolder) {
+//		return new File(crawlFolder+dumpFolder).list().length+1;
+		return numFilesinDumpFolder++;
 	}
 
 	private void addNewURLHeader(PrintWriter out, String url) {
@@ -86,7 +112,7 @@ public class MyUCICrawler extends WebCrawler {
 		out.println(url);
 	}
 	
-	public String getDumpFileName(int dumpFileNumber) {
-		return CrawlerUtilities.CRAWL_FOLDER+CrawlerUtilities.DUMP_FOLDER+"/"+CrawlerUtilities.DUMP_FILE+"_"+dumpFileNumber+".txt";
+	public String getDumpFileName(int dumpFileNumber, String crawlFolder, String dumpFolder, String dumpFile) {
+		return crawlFolder+dumpFolder+"/"+dumpFile+"_"+dumpFileNumber+".txt";
 	}
 }

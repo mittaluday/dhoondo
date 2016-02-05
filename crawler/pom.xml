@@ -15,7 +15,12 @@
   </properties>
 
   <dependencies>
-    <dependency>
+  <dependency> 
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-log4j12</artifactId>
+	  <version>1.7.14</version>
+	</dependency>
+ 	<dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
@@ -26,5 +31,60 @@
       <artifactId>crawler4j</artifactId>
       <version>4.2</version>
     </dependency>
+    <dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>1.7.14</version>
+	</dependency>
+    
   </dependencies>
+  <build>
+      <resources>
+        <resource>
+            <directory>resources</directory>
+        </resource>
+    </resources>
+   <plugins>
+     <plugin>
+       <!-- Build an executable JAR -->
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <version>2.4</version>
+       <configuration>
+        <archive>
+           <manifest>
+             <addClasspath>true</addClasspath>
+             <classpathPrefix>lib/</classpathPrefix>
+             <mainClass>in.mittaluday.crawler.MyCrawlerController</mainClass>
+           </manifest>
+         </archive>
+       </configuration>
+     </plugin>
+     <plugin>
+  <artifactId>maven-assembly-plugin</artifactId>
+  <configuration>
+    <archive>
+      <manifest>
+        <mainClass>in.mittaluday.crawler.MyCrawlerController</mainClass>
+      </manifest>
+    </archive>
+    <descriptorRefs>
+      <descriptorRef>jar-with-dependencies</descriptorRef>
+    </descriptorRefs>
+   </configuration>
+   <executions>
+    <execution>
+      <id>make-assembly</id> <!-- this is used for inheritance merges -->
+      <phase>package</phase> <!-- bind to the packaging phase -->
+      <goals>
+        <goal>single</goal>
+      </goals>
+     </execution>
+   </executions>
+   </plugin>
+   </plugins>
+  </build>
+
+
+  
 </project>

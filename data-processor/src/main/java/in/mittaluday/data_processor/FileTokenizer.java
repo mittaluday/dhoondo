@@ -21,6 +21,8 @@ public class FileTokenizer {
 	private ArrayList<String> listOfTokens;
 	private ArrayList<String> listofThreeGrams;
 	private HashMap<String, Integer> threeGramsFrequency;
+	private String subdomain;
+	private String subdomainURL;
 
 	public FileTokenizer(){
 		tokenCount = new HashMap<String, Integer>();
@@ -46,9 +48,59 @@ public class FileTokenizer {
 		this.file = file;
 	}
 
-		
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public HashMap<String, Integer> getTokenCount() {
+		return tokenCount;
+	}
+
+	public void setTokenCount(HashMap<String, Integer> tokenCount) {
+		this.tokenCount = tokenCount;
+	}
+
+	public String getSubdomain() {
+		return subdomain;
+	}
+
+	public void setSubdomain(String subdomain) {
+		this.subdomain = subdomain;
+	}
+
+	/**
+	 * First line of the dump file contains the URL
+	 * This method extracts the subdomainURL
+	 * @param fileHandle
+	 */
+	public void parseSubdomain(Scanner fileHandle){
+		this.subdomainURL = fileHandle.nextLine().trim();
+	}
+	
+	/**
+	 * Method to parse the subdomain from the URL
+	 * @param url
+	 * @return
+	 */
+	public String parseURLForSubDomain(String url) {
+		int startpos = url.indexOf("/", url.indexOf("/") + 1);
+		int endpos = url.indexOf("/", startpos+1);
+		if(endpos == -1){
+			endpos = url.length();
+		}
+		return url.substring(startpos+1, endpos);
+	}
+	
 	public void tokenizeFile() throws FileNotFoundException{
 		Scanner fileReader = new Scanner(file);
+		if(fileReader.hasNextLine()){
+			parseSubdomain(fileReader);
+			this.subdomain = parseURLForSubDomain(this.subdomainURL);
+		}
 		while(fileReader.hasNextLine()){
 			String line = fileReader.nextLine();
 			String tokens[] = line.split("[ ,();:\"]");
