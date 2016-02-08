@@ -48,7 +48,9 @@ public class MyUCICrawler extends WebCrawler {
 			e.printStackTrace();
 		}
 		logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
-         return !FILTERS.matcher(href).matches() && href.contains(crawlerProperties.getProperty("SEED_DOMAIN"));
+         return !FILTERS.matcher(href).matches() &&
+        		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
+        		 !href.contains("?");
      }
 
      /**

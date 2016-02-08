@@ -73,7 +73,7 @@ public class MyCrawlerController {
         config.setMaxDepthOfCrawling(Integer.parseInt(crawlerProperties.getProperty("CRAWLING_DEPTH")));
         config.setUserAgentString(crawlerProperties.getProperty("USER_STRING"));
         config.setPolitenessDelay(Integer.parseInt(crawlerProperties.getProperty("POLITENESS_DELAY")));
-        config.setResumableCrawling(false);
+        config.setResumableCrawling(true);
         config.setShutdownOnEmptyQueue(true);
         config.setIncludeBinaryContentInCrawling(false);
         config.setProcessBinaryContentInCrawling(false);       
