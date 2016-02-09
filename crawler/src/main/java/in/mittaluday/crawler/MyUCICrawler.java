@@ -47,8 +47,17 @@ public class MyUCICrawler extends WebCrawler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
-         return !FILTERS.matcher(href).matches() &&
+		//logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
+		logger.info("###Seed domain = " + String.valueOf(!FILTERS.matcher(href).matches() &&
+       		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
+       		 !href.contains("?"))+ ": href=" + href + ": " + href.getClass()) ;
+		logger.info("********************************************************************************************");
+		
+		if(href.contains("?")){
+			logger.info("HELLOOOOOOOO");
+		}
+ 
+		return !FILTERS.matcher(href).matches() &&
         		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
         		 !href.contains("?");
      }
@@ -69,7 +78,7 @@ public class MyUCICrawler extends WebCrawler {
 		}
     	 
          String url = page.getWebURL().getURL();
-         logger.info(crawlerProperties.getProperty("USER_STRING")+"URL: " + url);
+         //logger.info(crawlerProperties.getProperty("USER_STRING")+"URL: " + url);
 
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -77,9 +86,9 @@ public class MyUCICrawler extends WebCrawler {
              String html = htmlParseData.getHtml();
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
-             logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
-             logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
-             logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
+             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
+             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
+             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
              
              try {
 				addToDataDumpFile(text.trim(), url, crawlerProperties);
