@@ -17,10 +17,23 @@ public class Postings {
 
 	private List<Integer> positions;
 	
+	public List<Integer> getPositions() {
+		return positions;
+	}
+
+	public void setPositions(List<Integer> positions) {
+		this.positions = positions;
+	}
+
 	public Postings(String name,List<Integer> positions) {
 		// TODO Auto-generated constructor stub
 		this.documentName=name;
 		this.positions=positions;
+	}
+	
+	@Override
+	public String toString(){
+		return documentName + ": " + String.valueOf(tfidf) + ": " + positions;
 	}
 }
 

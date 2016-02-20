@@ -13,6 +13,22 @@ public class TermIndex {
 	static Map<String, List<Postings>> index;
 	static long corpus;
 
+	public static Map<String, List<Postings>> getIndex() {
+		return index;
+	}
+
+	public static void setIndex(Map<String, List<Postings>> index) {
+		TermIndex.index = index;
+	}
+
+	public static long getCorpus() {
+		return corpus;
+	}
+
+	public static void setCorpus(long corpus) {
+		TermIndex.corpus = corpus;
+	}
+
 	public TermIndex() {
 		// TODO Auto-generated constructor stub
 		index = new HashMap();
