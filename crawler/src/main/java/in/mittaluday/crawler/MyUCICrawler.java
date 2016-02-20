@@ -59,7 +59,7 @@ public class MyUCICrawler extends WebCrawler {
  
 		return !FILTERS.matcher(href).matches() &&
         		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
-        		 !href.contains("?");
+        		 !href.contains("?") && (href.length()<=512);
      }
 
      /**
