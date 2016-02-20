@@ -1,11 +1,15 @@
 package in.mittaluday.data_processor;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -19,11 +23,13 @@ public class FileTokenizer {
 	private File file;
 	private HashMap<String, Integer> tokenCount;
 	private HashMap<String, List<Integer>> tokenPosition;
+
 	private ArrayList<String> listOfTokens;
 	private ArrayList<String> listofThreeGrams;
 	private HashMap<String, Integer> threeGramsFrequency;
 	private String subdomain;
 	private String subdomainURL;
+
 
 	public String getSubdomainURL() {
 		return subdomainURL;
@@ -32,6 +38,9 @@ public class FileTokenizer {
 	public void setSubdomainURL(String subdomainURL) {
 		this.subdomainURL = subdomainURL;
 	}
+
+	private static final String specialCharacters = ":;,~!@#$%^&*()_+=\\.\"<>?/`\\W";
+	private static final String delimeters = "[ " + specialCharacters + "]+";
 
 	public FileTokenizer() {
 		tokenCount = new HashMap<String, Integer>();
@@ -119,13 +128,17 @@ public class FileTokenizer {
 		}
 		while (fileReader.hasNextLine()) {
 			String line = fileReader.nextLine();
-			String tokens[] = line.split("[ ,();:\"]");
+
+			String tokens[] = line.split(delimeters);
+
 			for (int i = 0; i < tokens.length; i++) {
 				String trimmedToken = tokens[i].trim();
 				if (trimmedToken.length() > 0) {
 					listOfTokens.add(trimmedToken.toLowerCase());
 					incrementTokenCount(trimmedToken.toLowerCase());
+
 					addTokenPosition(trimmedToken.toLowerCase(), i);
+
 				}
 			}
 		}
@@ -138,24 +151,39 @@ public class FileTokenizer {
 		}
 	}
 
-	public void computeThreeGrams(List<String> tokens) {
+	static HashSet<String> stopworddict;
+
+	public static void loadDictionary() throws IOException, ClassNotFoundException {
+		String stopworddictDictFilePath = "stopwords.ser";
+		File stopwordDictFile = new File(stopworddictDictFilePath);
+		FileInputStream f = new FileInputStream(stopworddictDictFilePath);
+		ObjectInputStream s = new ObjectInputStream(f);
+		stopworddict = (HashSet<String>) s.readObject();
+		s.close();
+		f.close();
+	}
+
+	public void computeThreeGrams(List<String> tokens) throws ClassNotFoundException, IOException {
 		int threeGramCount = 1;
+		loadDictionary();
 		String firstGram = "", secondGram = "", thirdGram = "";
 		for (int i = 0; i < tokens.size(); i++) {
 			String token = tokens.get(i);
-			if (threeGramCount == 1) {
-				firstGram = token.toLowerCase();
-				threeGramCount++;
-			} else if (threeGramCount == 2) {
-				firstGram = token.toLowerCase();
-				threeGramCount++;
-			} else {
-				thirdGram = token.toLowerCase();
-				String temp = firstGram + " " + secondGram + " " + thirdGram;
-				listofThreeGrams.add(temp);
-				incrementThreeGramCount(temp);
-				firstGram = secondGram;
-				secondGram = thirdGram;
+			if (!stopworddict.contains(token)) {
+				if (threeGramCount == 1) {
+					firstGram = token.toLowerCase();
+					threeGramCount++;
+				} else if (threeGramCount == 2) {
+					firstGram = token.toLowerCase();
+					threeGramCount++;
+				} else {
+					thirdGram = token.toLowerCase();
+					String temp = firstGram + " " + secondGram + " " + thirdGram;
+					listofThreeGrams.add(temp);
+					incrementThreeGramCount(temp);
+					firstGram = secondGram;
+					secondGram = thirdGram;
+				}
 			}
 		}
 	}

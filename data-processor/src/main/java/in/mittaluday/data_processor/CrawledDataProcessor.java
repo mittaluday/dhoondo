@@ -35,7 +35,8 @@ public class CrawledDataProcessor {
 
 	}
 	
-	public void startDataProcessing() throws IOException{
+	
+	public void startDataProcessing() throws IOException, ClassNotFoundException{
 		Properties prop = getConfigurationProperties();
 		
 		
@@ -96,7 +97,7 @@ public class CrawledDataProcessor {
 				logger.error(e.getStackTrace().toString());
 				logger.error("Token lost");
 			}
-			if(counter%100 == 0){
+			if(counter%10000 == 0){
 				logger.info("Saved "+ String.valueOf(counter) + "tokens");
 			}
 			counter+=1;
