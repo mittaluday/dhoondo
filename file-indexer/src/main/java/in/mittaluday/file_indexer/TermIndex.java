@@ -14,7 +14,6 @@ public class TermIndex implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	static Map<String, List<Postings>> index;
 	static long corpus;
 
