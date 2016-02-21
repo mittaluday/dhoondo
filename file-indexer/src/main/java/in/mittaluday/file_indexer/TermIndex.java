@@ -2,6 +2,7 @@ package in.mittaluday.file_indexer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +10,11 @@ import java.util.Map;
 
 import in.mittaluday.data_processor.FileTokenizer;
 
-public class TermIndex {
+public class TermIndex implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static Map<String, List<Postings>> index;
 	static long corpus;
 

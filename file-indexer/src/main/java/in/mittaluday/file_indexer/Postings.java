@@ -1,9 +1,14 @@
 package in.mittaluday.file_indexer;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Postings {
+public class Postings implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String documentName;
 	private double tfidf;
 	public double getTfidf() {
