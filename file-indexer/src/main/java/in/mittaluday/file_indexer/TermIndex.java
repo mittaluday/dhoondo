@@ -34,8 +34,7 @@ public class TermIndex implements Serializable {
 	}
 
 	public TermIndex() {
-		// TODO Auto-generated constructor stub
-		index = new HashMap();
+		index = new HashMap<String, List<Postings>>();
 	}
 
 	public void addTerms(File file) throws FileNotFoundException {

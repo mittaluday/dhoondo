@@ -35,6 +35,11 @@ public class Postings implements Serializable {
 		this.positions=positions;
 	}
 	
+	public String getDocumentName(){
+		return documentName;
+	}
+	
+	
 	@Override
 	public String toString(){
 		return documentName + ": " + String.valueOf(tfidf) + ": " + positions;
