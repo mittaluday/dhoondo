@@ -16,10 +16,16 @@ import java.util.Map;
  *
  */
 public class App {
-	static String indexFilePath = "index.ser";
+	static String indexFilePath = "/home/purvi/Desktop/ir/info-retrieval-w16/index.ser";
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 
+		Map<String, List<Postings>> index;
+		index = getIndex();
+		showIndex(index);
+	}
+
+	public static Map<String, List<Postings>> getIndex() throws ClassNotFoundException, IOException {
 		Map<String, List<Postings>> index;
 		File f = new File(indexFilePath);
 		if (f.exists() && !f.isDirectory()) {
@@ -30,7 +36,7 @@ public class App {
 			serializeIndex(index);
 		}
 
-		showIndex(index);
+		return index;
 	}
 
 	public static void calculateTfidf(TermIndex index) {
@@ -88,7 +94,7 @@ public class App {
 		return TermIndex.getIndex();
 	}
 
-	private static Map<String, List<Postings>> loadIndex() throws IOException, ClassNotFoundException {
+	public static Map<String, List<Postings>> loadIndex() throws IOException, ClassNotFoundException {
 
 		File indexFile = new File(indexFilePath);
 		FileInputStream f = new FileInputStream(indexFile);
