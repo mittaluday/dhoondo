@@ -126,6 +126,7 @@ public class FileTokenizer {
 			parseSubdomain(fileReader);
 			this.subdomain = parseURLForSubDomain(this.subdomainURL);
 		}
+		int positionCounter = 0;
 		while (fileReader.hasNextLine()) {
 			String line = fileReader.nextLine();
 
@@ -136,8 +137,8 @@ public class FileTokenizer {
 				if (trimmedToken.length() > 0) {
 					listOfTokens.add(trimmedToken.toLowerCase());
 					incrementTokenCount(trimmedToken.toLowerCase());
-
-					addTokenPosition(trimmedToken.toLowerCase(), i);
+					
+					addTokenPosition(trimmedToken.toLowerCase(), positionCounter++);
 
 				}
 			}
