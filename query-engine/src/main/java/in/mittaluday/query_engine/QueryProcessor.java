@@ -23,11 +23,11 @@ public class QueryProcessor {
 	}
 
 	private void initialize() throws ClassNotFoundException, IOException {
-		index = in.mittaluday.file_indexer.App.getIndex();
-		cumulativePageScoreMap = new HashMap<String, Double>();
+		index = in.mittaluday.file_indexer.App.getIndex();		
 	}
 
 	public ArrayList<String> queryIndex(String query) {
+		cumulativePageScoreMap = new HashMap<String, Double>();
 		if (query == null || query.isEmpty()) {
 			return new ArrayList<String>();
 		}
