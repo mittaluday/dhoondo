@@ -1,7 +1,10 @@
 package in.mittaluday.search_ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import in.mittaluday.query_engine.QueryProcessor;
 import in.mittaluday.search_model.Query;
 
 @Controller
 public class SearchController {
+	
+	QueryProcessor qp;
+	
+	//Load index once during the initialization of the controller
+	@PostConstruct
+	public void init() throws ClassNotFoundException, IOException{
+		qp = new QueryProcessor();
+	}
 
 	@RequestMapping("/test")
 	public String greeting(
@@ -30,17 +42,27 @@ public class SearchController {
 	}
 	
 	@RequestMapping(value="/search", method=RequestMethod.POST)
-	public String search(@ModelAttribute(value="query") Query query, Model model){
+	public String search(@ModelAttribute(value="query") Query query, Model model) throws ClassNotFoundException, IOException{
 		
-		//TODO: Perform search and populate results to add into the model. 
+		//TODO: Perform search and populate results to add into the model.
+		//TODO: Handle exception to re-route to error page
 		
-		List<String> stringResults = new ArrayList<String>();
-		stringResults.add("Result 1: HC result");
-		stringResults.add("Results Helloworld");
-		stringResults.add("Whatever");
-		stringResults.add("Yet another result");
-		stringResults.add("That's it for testing");
-		
+    	String queryString = query.getQueryString();
+    	
+    	//Validate query string
+    	if(queryString.isEmpty()){
+    		return "dhoondo-home";
+    	}
+
+    	List<String> stringResults = new ArrayList<String>();
+
+    	ArrayList<String> results = qp.queryIndex(queryString.toLowerCase());
+    	if(!results.isEmpty()){
+    		for(String s : results){
+    			stringResults.add(s);
+    		}
+    	}
+    	
 		model.addAttribute("query", query);
 		model.addAttribute("results", stringResults);
 		

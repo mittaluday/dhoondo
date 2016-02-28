@@ -19,14 +19,13 @@
 		<div class="container ">
 			<div class="row">
 				<div class="col-md-4">
-					<h1 >DSearch-Results</h1>	
+					<h1 >Dhoondo - Results</h1>	
 				</div>
 			</div>
 			<p th:text="'Query: ' + ${query.queryString}"></p>
 			<div class = "row" th:each="result : ${results}">
 				<div class="col-md-6">
-					<h4><a href="#"><p th:text="${result}"></p></a></h4>
-					<p>Some random text from the search result comes here <br></br> Text is extracted from the document</p>
+					<h4><a th:href="${result}"><p th:text="${result}"></p></a></h4>
 				</div>
 			</div>
 		</div>
