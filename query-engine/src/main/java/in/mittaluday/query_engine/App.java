@@ -7,8 +7,8 @@ public class App
 {
     public static void main( String[] args ) throws ClassNotFoundException, IOException
     {
-    	QueryProcessor qp = new QueryProcessor();
-    	String queryString = "Information Science";
+    	QueryProcessorMongo qp = new QueryProcessorMongo();
+    	String queryString = "Information";
     	ArrayList<String> results = qp.queryIndex(queryString.toLowerCase());
     	if(results.isEmpty()){
     		System.out.println("No results to show");
