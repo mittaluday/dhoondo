@@ -9,14 +9,16 @@ public class FileIndex {
 	private Date dateOfLastIndex;
 	private Integer numberOfTokens;
 	private String subdomain;
+	private String title;
 	
 	public FileIndex(String fileName, Date dateOfLastUpdate, Date dateOfLastIndex,
-			Integer numberOfTokens, String subdomain){
+			Integer numberOfTokens, String subdomain, String title){
 		this.fileName = fileName;
 		this.dateOfLastUpdate = dateOfLastUpdate;
 		this.dateOfLastIndex = dateOfLastIndex;
 		this.numberOfTokens = numberOfTokens;
 		this.subdomain = subdomain;
+		this.title = title;
 	}
 	public Integer getId() {
 		return id;
@@ -53,8 +55,12 @@ public class FileIndex {
 	}
 	public void setSubdomain(String subdomain) {
 		this.subdomain = subdomain;
+	}	
+	public String getTitle() {
+		return title;
 	}
-	
-	
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 }

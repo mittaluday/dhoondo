@@ -23,7 +23,7 @@ public class FileIndexRepository {
 	}
 	
 	public Integer addFileIndex(String fileName, Date dateOfLastUpdate, Date dateOfLastIndex,
-			Integer numberOfTokens, String subdomain) {
+			Integer numberOfTokens, String subdomain, String title) {
 	
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -31,7 +31,7 @@ public class FileIndexRepository {
 		try {
 			tx = session.beginTransaction();
 	        FileIndex fi = new FileIndex(fileName, dateOfLastUpdate, dateOfLastIndex,
-	        		numberOfTokens, subdomain);
+	        		numberOfTokens, subdomain, title);
 			id = (Integer) session.save(fi);
 			tx.commit();
 		} catch (HibernateException e) {
