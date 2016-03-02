@@ -19,7 +19,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class MyUCICrawler extends WebCrawler {
 
-    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|php"
+    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|mat|php"
             + "|png|mp3|mp3|zip|gz))$");
     
     private static int numFilesinDumpFolder = 1;    
@@ -85,41 +85,60 @@ public class MyUCICrawler extends WebCrawler {
              String text = htmlParseData.getText();
              String html = htmlParseData.getHtml();
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
+             String title = htmlParseData.getTitle();
 
              //logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
              //logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
              //logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
              
              try {
-				addToDataDumpFile(text.trim(), url, crawlerProperties);
+				addToDumpFiles(text.trim(), html.trim(), url, title, crawlerProperties);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}                       
          }
     }
-     
-	private synchronized void addToDataDumpFile(String text, String url, Properties crawlerProperties) throws IOException {
-		int dumpFileNumber = getDumpFileNumber(crawlerProperties.getProperty("CRAWL_FOLDER"),
-												crawlerProperties.getProperty("DUMP_FOLDER"));
-		
+    
+
+	private synchronized void addToDumpFiles(String text, String html, String url, String title, Properties crawlerProperties) throws IOException {
+		int dumpFileNumber = getDumpFileNumber(crawlerProperties.getProperty("CRAWL_FOLDER"),crawlerProperties.getProperty("DUMP_FOLDER"));
+		addToDataDumpFile(text.trim(), url, title, crawlerProperties, dumpFileNumber);
+		addToDataDumpHtmlFile(html.trim(), url, title, crawlerProperties, dumpFileNumber);		
+	}
+
+	private synchronized void addToDataDumpFile(String text, String url, String title, 
+												Properties crawlerProperties, int dumpFileNumber) throws IOException {		
 		File dumpFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
 																crawlerProperties.getProperty("DUMP_FOLDER"),
-																crawlerProperties.getProperty("DUMP_FILE")));	
+																crawlerProperties.getProperty("DUMP_FILE")));
+		System.out.println("Trying to create " + dumpFile.getAbsolutePath());
 		dumpFile.createNewFile();
-//		System.out.println("Crawled " + url + " created file " + dumpFile.getAbsolutePath());
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
+		out.println(title);
 		out.println(text);	
+		out.flush();
+	}
+	
+	 
+	private synchronized void addToDataDumpHtmlFile(String html, String url, String title, Properties crawlerProperties, int dumpFileNumber) throws IOException {
+		File dumpHtmlFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
+				crawlerProperties.getProperty("DUMP_HTML_FOLDER"),
+				crawlerProperties.getProperty("DUMP_FILE")));
+		System.out.println("Trying to create " + dumpHtmlFile.getAbsolutePath());
+		dumpHtmlFile.createNewFile();
+		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpHtmlFile, true)));		
+		addNewURLHeader(out,url);
+		out.println(title);
+		out.println(html);	
 		out.flush();
 	}
 
 	private synchronized int getDumpFileNumber(String crawlFolder, String dumpFolder) {
-//		return new File(crawlFolder+dumpFolder).list().length+1;
 		return numFilesinDumpFolder++;
 	}
 
 	private void addNewURLHeader(PrintWriter out, String url) {
-//		out.println(CrawlerUtilities.NEW_URL_BREAK + CrawlerUtilities.USER_STRING + CrawlerUtilities.NEW_URL_BREAK);
 		out.println(url);
 	}
 	

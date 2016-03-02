@@ -13,5 +13,6 @@
 	  <property name="dateOfLastIndex" column="date_of_last_index" type="timestamp"/>
 	  <property name="numberOfTokens" column="number_of_tokens" type="int"/>
 	  <property name="subdomain" column="subdomain" type="string"/>
+	  <property name="title" column="title" type="string"/>
    </class>
 </hibernate-mapping>

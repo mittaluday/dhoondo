@@ -29,15 +29,7 @@ public class FileTokenizer {
 	private HashMap<String, Integer> threeGramsFrequency;
 	private String subdomain;
 	private String subdomainURL;
-
-
-	public String getSubdomainURL() {
-		return subdomainURL;
-	}
-
-	public void setSubdomainURL(String subdomainURL) {
-		this.subdomainURL = subdomainURL;
-	}
+	private String pageTitle;
 
 	private static final String specialCharacters = ":;,~!@#$%^&*()_+=\\.\"<>?/`\\W";
 	private static final String delimeters = "[ " + specialCharacters + "]+";
@@ -94,6 +86,24 @@ public class FileTokenizer {
 	public void setSubdomain(String subdomain) {
 		this.subdomain = subdomain;
 	}
+	
+
+	public String getSubdomainURL() {
+		return subdomainURL;
+	}
+
+	public void setSubdomainURL(String subdomainURL) {
+		this.subdomainURL = subdomainURL;
+	}
+	
+
+	public String getTitle() {
+		return pageTitle;
+	}
+
+	public void setTitle(String title) {
+		this.pageTitle = title;
+	}
 
 	/**
 	 * First line of the dump file contains the URL This method extracts the
@@ -125,6 +135,9 @@ public class FileTokenizer {
 		if (fileReader.hasNextLine()) {
 			parseSubdomain(fileReader);
 			this.subdomain = parseURLForSubDomain(this.subdomainURL);
+		}
+		if (fileReader.hasNextLine()) {
+			this.pageTitle = fileReader.nextLine().trim();
 		}
 		int positionCounter = 0;
 		while (fileReader.hasNextLine()) {
