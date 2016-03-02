@@ -16,7 +16,7 @@ import java.util.Map;
  *
  */
 public class App {
-	static String indexFilePath = "/home/purvi/Desktop/ir/info-retrieval-w16/index.ser";
+	static String indexFilePath = "C:/temp/index.ser";
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -78,8 +78,8 @@ public class App {
 
 	public static Map<String, List<Postings>> createIndex() throws FileNotFoundException {
 
-		String CRAWL_FOLDER = "/home/purvi/Desktop/ir/info-retrieval-w16/crawler-data";
-		String DUMP_FOLDER = "/dump";
+		String CRAWL_FOLDER = "C:/temp";
+		String DUMP_FOLDER = "/dumpdata";
 		TermIndex index = new TermIndex();
 		int counter = 0;
 		File dumpFileDirectory = new File(CRAWL_FOLDER + DUMP_FOLDER);

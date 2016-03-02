@@ -30,7 +30,7 @@ public class MyCrawlerController {
         CrawlConfig config = new CrawlConfig();
         setCrawlConfigurations(config, crawlerProperties);
         try {
-			initializeDumpDirectory(config, crawlerProperties);
+			initializeDumpDirectories(config, crawlerProperties);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.exit(0);
@@ -79,7 +79,7 @@ public class MyCrawlerController {
         config.setProcessBinaryContentInCrawling(false);    
 	}
 	
-	private static void initializeDumpDirectory(CrawlConfig config, Properties crawlerProperties) throws Exception {
+	private static void initializeDumpDirectories(CrawlConfig config, Properties crawlerProperties) throws Exception {
 	    File dumpFolder = new File(config.getCrawlStorageFolder() + crawlerProperties.getProperty("DUMP_FOLDER"));
 	    if (!dumpFolder.exists()) {
 	      if (!dumpFolder.mkdirs()) {
@@ -90,6 +90,20 @@ public class MyCrawlerController {
 	    		file.delete();
 	    	}
 	    }
+	    
+	    
+	    File dumpHtmlFolder = new File(config.getCrawlStorageFolder() + crawlerProperties.getProperty("DUMP_HTML_FOLDER"));
+	    if (!dumpHtmlFolder.exists()) {
+	      if (!dumpHtmlFolder.mkdirs()) {
+	        throw new Exception("Failed creating the frontier folder: " + dumpHtmlFolder.getAbsolutePath());
+	      }
+	    } else {
+	    	for(File file:dumpHtmlFolder.listFiles()){
+	    		file.delete();
+	    	}
+	    }
+	    
+	    
 	}	
 
 }
