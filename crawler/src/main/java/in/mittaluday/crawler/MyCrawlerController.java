@@ -1,7 +1,9 @@
 package in.mittaluday.crawler;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -62,6 +64,9 @@ public class MyCrawlerController {
 	        controller.start(MyUCICrawler.class, numberOfCrawlers);
 	        long endTime = System.currentTimeMillis();
 	        logger.info(logSeq+ "Total time for crawling: " + (endTime-startTime));
+	        
+	        serializeMaps();
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,9 +106,32 @@ public class MyCrawlerController {
 	    	for(File file:dumpHtmlFolder.listFiles()){
 	    		file.delete();
 	    	}
-	    }
-	    
-	    
+	    }  	    
 	}	
+	
+	private static void serializeMaps() throws IOException {
+		CrawlerGetProperties crawlerProperties = new CrawlerGetProperties();
+		Properties properties;
+		properties = crawlerProperties.getPropValues();
+
+		File anchorText = new File(properties.getProperty("CRAWL_FOLDER") + "/" + properties.getProperty("ANCHORTEXTFILE"));
+		File pageRankMap = new File(properties.getProperty("CRAWL_FOLDER") + "/" + properties.getProperty("PAGERANKMAP"));
+		
+		if(!anchorText.exists()){
+			anchorText.createNewFile();
+		}
+		FileOutputStream f = new FileOutputStream(anchorText, false);
+		ObjectOutputStream s = new ObjectOutputStream(f);
+		s.writeObject(MyUCICrawler.anchortextMap);
+		s.close();
+		
+		if(!pageRankMap.exists()){
+			pageRankMap.createNewFile();
+		}
+		f = new FileOutputStream(pageRankMap, false);
+		s = new ObjectOutputStream(f);
+		s.writeObject(MyUCICrawler.pageRankerMap);
+		s.close();		
+	}
 
 }

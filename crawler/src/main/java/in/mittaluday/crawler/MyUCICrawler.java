@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -23,6 +25,9 @@ public class MyUCICrawler extends WebCrawler {
             + "|png|mp3|mp3|zip|gz))$");
     
     private static int numFilesinDumpFolder = 1;    
+    
+    public static HashMap<String , LinksCounter> pageRankerMap = new HashMap<String, LinksCounter>();
+    public static HashMap<String , ArrayList<String>> anchortextMap = new HashMap<String, ArrayList<String>>();
     
     private static Logger logger = LoggerFactory.getLogger(MyUCICrawler.class);
 
@@ -86,10 +91,8 @@ public class MyUCICrawler extends WebCrawler {
              String html = htmlParseData.getHtml();
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
              String title = htmlParseData.getTitle();
-
-             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Text length: " + text.length());
-             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Html length: " + html.length());
-             //logger.info(crawlerProperties.getProperty("USER_STRING")+"Number of outgoing links: " + links.size());
+             
+             addLinksToPageRankerMap(url, links);
              
              try {
 				addToDumpFiles(text.trim(), html.trim(), url, title, crawlerProperties);
@@ -99,6 +102,45 @@ public class MyUCICrawler extends WebCrawler {
          }
     }
     
+
+	private void addLinksToPageRankerMap(String url, Set<WebURL> links) {
+		// Increment outgoing links from given url
+		if(pageRankerMap.containsKey(url)){
+			LinksCounter lc = pageRankerMap.get(url);
+			lc.incrementOutgoingLinks(links.size());
+			pageRankerMap.put(url, lc);
+			
+		} else {
+			LinksCounter lc = new LinksCounter();
+			lc.setOutgoingLinks(links.size());	
+			pageRankerMap.put(url, lc);
+		}
+		
+		// Increment incoming links for all the urls in links set
+		for(WebURL w : links){
+			String linkurl = w.getURL();			
+			if(pageRankerMap.containsKey(linkurl)){
+				LinksCounter lc = pageRankerMap.get(linkurl);
+				lc.incrementIncomingLinks(1);
+				pageRankerMap.put(linkurl, lc);
+			} else {
+				LinksCounter lc = new LinksCounter();
+				lc.setIncomingLinks(1);	
+				pageRankerMap.put(linkurl, lc);
+			}		
+			
+			String anchorText = w.getAnchor();
+			if(anchortextMap.containsKey(linkurl)){
+				ArrayList<String> anchorList = anchortextMap.get(linkurl);
+				anchorList.add(anchorText);
+				anchortextMap.put(linkurl, anchorList);
+			} else {
+				ArrayList<String> anchorList = new ArrayList<String>();
+				anchorList.add(anchorText);
+				anchortextMap.put(linkurl, anchorList);
+			}			
+		}		
+	}
 
 	private synchronized void addToDumpFiles(String text, String html, String url, String title, Properties crawlerProperties) throws IOException {
 		int dumpFileNumber = getDumpFileNumber(crawlerProperties.getProperty("CRAWL_FOLDER"),crawlerProperties.getProperty("DUMP_FOLDER"));
@@ -145,4 +187,5 @@ public class MyUCICrawler extends WebCrawler {
 	public String getDumpFileName(int dumpFileNumber, String crawlFolder, String dumpFolder, String dumpFile) {
 		return crawlFolder+dumpFolder+"/"+dumpFile+"_"+dumpFileNumber+".txt";
 	}
+	
 }
