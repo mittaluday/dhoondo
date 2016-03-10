@@ -44,6 +44,9 @@ public class QueryProcessor {
 			if (postings != null) {
 				for (Postings p : postings) {
 					addPageScoreForTerm(p.getDocumentName(), p.getTfidf());
+					if(p.getDocumentTitle().contains(term)){
+						addPageScoreForTerm(p.getDocumentName(), 1.0);
+					}
 				}
 			}
 		}

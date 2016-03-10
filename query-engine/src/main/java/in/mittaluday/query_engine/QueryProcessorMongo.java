@@ -45,6 +45,10 @@ public class QueryProcessorMongo {
 			if (postings != null) {
 				for (Document p : postings) {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
+					String title = p.getString("title");
+					if(title.contains(term)){
+						addPageScoreForTerm(p.getString("document_name"), 1.0);
+					}
 				}
 			}
 		}
