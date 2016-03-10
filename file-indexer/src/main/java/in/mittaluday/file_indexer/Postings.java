@@ -13,6 +13,7 @@ public class Postings implements Serializable {
 	 * 
 	 */
 	private String documentName;
+	private String documentTitle;
 	private double tfidf;
 	public double getTfidf() {
 		return tfidf;
@@ -33,16 +34,24 @@ public class Postings implements Serializable {
 		this.positions = positions;
 	}
 
-	public Postings(String name,List<Integer> positions) {
+	public Postings(String name,List<Integer> positions, String documentTitle) {
 		// TODO Auto-generated constructor stub
 		this.documentName=name;
 		this.positions=positions;
+		this.documentTitle = documentTitle;
 	}
 	
 	public String getDocumentName(){
 		return documentName;
 	}
 	
+	public void setDocumentTitle(String documentTitle) {
+		this.documentTitle = documentTitle;
+	}
+	
+	public String getDocumentTitle(){
+		return documentTitle;
+	}
 	
 	@Override
 	public String toString(){
