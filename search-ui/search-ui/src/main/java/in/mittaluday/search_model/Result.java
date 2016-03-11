@@ -1,17 +1,28 @@
 package in.mittaluday.search_model;
 
-import java.util.List;
-
 public class Result {
 	
-	private List<String> searchResults;
-
-	public List<String> getSearchResults() {
-		return searchResults;
+	String title;
+	String description;
+	String url;
+	
+	public String getTitle() {
+		return title;
 	}
-
-	public void setSearchResults(List<String> searchResults) {
-		this.searchResults = searchResults;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
