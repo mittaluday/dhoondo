@@ -13,32 +13,53 @@ import java.util.Map.Entry;
 
 import org.bson.Document;
 
-import com.mongodb.Block;
-import com.mongodb.client.FindIterable;
-
 import in.mittaluday.file_indexer.MongoApp;
 import in.mittaluday.file_indexer.Postings;
 
 public class QueryProcessorMongo {
 	Map<String, List<Postings>> index;
 	HashMap<String, Double> cumulativePageScoreMap;
+	HashMap<String, String> urlToTitleMap;
 
 	public QueryProcessorMongo() throws ClassNotFoundException, IOException {
 		index = in.mittaluday.file_indexer.App.getIndex();
 		cumulativePageScoreMap = new HashMap<String, Double>();
 	}
 
-	public ArrayList<String> queryIndex(String query) {
+	public ArrayList<Result> queryIndex(String query) {
 		if (query == null || query.isEmpty()) {
-			return new ArrayList<String>();
+			return new ArrayList<Result>();
 		}
 		String[] queryTerms = query.split(" ");
 		findMatchingPages(queryTerms);
 		findMatchingPagesInAnchorText(queryTerms);
-		ArrayList<String> results = rankResults();
+		ArrayList<String> stringResults = rankResults();
+		ArrayList<Result> results = createResultStructureList(stringResults);
 		return results;
 	}
 
+	private ArrayList<Result> createResultStructureList(ArrayList<String> stringResults) {
+		ArrayList<Result> results = new ArrayList<Result>();
+		for(int i=0;i<stringResults.size();i++){
+			results.add(new Result(stringResults.get(i), urlToTitleMap.get(stringResults.get(i))));
+		}
+		return results;
+	}
+
+	@SuppressWarnings("unused")
+	private void findMatchingPagesOld(String[] queryTerms) {
+		for (String term : queryTerms) {
+			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
+					.into(new ArrayList<Document>());
+			if (postings != null) {
+				for (Document p : postings) {
+					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
+				}
+			}
+		}
+	}
+	
+	
 	private void findMatchingPages(String[] queryTerms) {
 		for (String term : queryTerms) {
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
@@ -47,6 +68,7 @@ public class QueryProcessorMongo {
 				for (Document p : postings) {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
 					String title = p.getString("title");
+					urlToTitleMap.put(p.getString("document_name"), title);
 					if(title.contains(term)){
 						addPageScoreForTerm(p.getString("document_name"), 1.0);
 					}
@@ -54,7 +76,6 @@ public class QueryProcessorMongo {
 			}
 		}
 	}
-	
 
 	private void findMatchingPagesInAnchorText(String[] queryTerms) {
 		for (String term : queryTerms) {
@@ -68,6 +89,7 @@ public class QueryProcessorMongo {
 		}		
 	}
 	
+	@SuppressWarnings("unused")
 	private void findMatchingPagesBasedOnCosine(String[] queryTerms) {
 		//Assuming tf for every query term as 1 i.e. every term occurs only once in the query
 		double [] queryTermIdf = new double[queryTerms.length];
@@ -79,7 +101,7 @@ public class QueryProcessorMongo {
 		}	
 		// cant proceed, dont have euclidean length for every document 		
 	}
-
+	
 	private void addPageScoreForTerm(String documentName, double tfidf) {
 		if (cumulativePageScoreMap.containsKey(documentName)) {
 			cumulativePageScoreMap.put(documentName, cumulativePageScoreMap.get(documentName) + tfidf);
