@@ -34,6 +34,7 @@ public class QueryProcessorMongo {
 		}
 		String[] queryTerms = query.split(" ");
 		findMatchingPages(queryTerms);
+		findMatchingPagesInAnchorText(queryTerms);
 		ArrayList<String> results = rankResults();
 		return results;
 	}
@@ -52,6 +53,31 @@ public class QueryProcessorMongo {
 				}
 			}
 		}
+	}
+	
+
+	private void findMatchingPagesInAnchorText(String[] queryTerms) {
+		for (String term : queryTerms) {
+			List<Document> postings = MongoApp.db.getCollection("anchorindex").find(new Document("term", term))
+					.into(new ArrayList<Document>());
+			if (postings != null) {
+				for (Document p : postings) {
+					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
+				}
+			}
+		}		
+	}
+	
+	private void findMatchingPagesBasedOnCosine(String[] queryTerms) {
+		//Assuming tf for every query term as 1 i.e. every term occurs only once in the query
+		double [] queryTermIdf = new double[queryTerms.length];
+		List<Document> postings = MongoApp.db.getCollection("statistics").find().into(new ArrayList<Document>());
+		long corpusSize = postings.get(0).getLong("corpussize");
+		for (int i=0;i<queryTerms.length;i++) {
+			double idf = ((ArrayList<Postings>)index.get(queryTerms[i])).size();
+			queryTermIdf[i] = Math.log10(corpusSize/idf);
+		}	
+		// cant proceed, dont have euclidean length for every document 		
 	}
 
 	private void addPageScoreForTerm(String documentName, double tfidf) {
