@@ -71,7 +71,7 @@ public class FileTokenizer {
 		return tokenCount;
 	}
 
-	public HashMap<String, List<Integer>> getTokenPostion() {
+	public HashMap<String, List<Integer>> getTokenPosition() {
 		return tokenPosition;
 	}
 
@@ -150,7 +150,6 @@ public class FileTokenizer {
 				if (trimmedToken.length() > 0) {
 					listOfTokens.add(trimmedToken.toLowerCase());
 					incrementTokenCount(trimmedToken.toLowerCase());
-					
 					addTokenPosition(trimmedToken.toLowerCase(), positionCounter++);
 
 				}

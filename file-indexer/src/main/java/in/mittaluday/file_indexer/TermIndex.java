@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.mittaluday.data_processor.FileTokenizer;
+import in.mittaluday.data_processor.StreamTokeniser;
 
 public class TermIndex implements Serializable {
 	/**
@@ -41,7 +42,7 @@ public class TermIndex implements Serializable {
 		FileTokenizer ft = new FileTokenizer(file);
 		ft.tokenizeFile();
 		corpus++;
-		Map<String,List<Integer>> tokenPositionMap = ft.getTokenPostion();
+		Map<String,List<Integer>> tokenPositionMap = ft.getTokenPosition();
 		for (String token : tokenPositionMap.keySet()) {
 			if(index.containsKey(token)){
 				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token)));
@@ -52,8 +53,22 @@ public class TermIndex implements Serializable {
 				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token)));
 			}
 		}
-		
-		
+	}
+		public void addTerms(String URL,String stream) throws FileNotFoundException {
+			corpus++;
+			StreamTokeniser ft=new StreamTokeniser(stream);
+			ft.tokenizeString();
+			Map<String,List<Integer>> tokenPositionMap = ft.getTokenPosition();
+			for (String token : tokenPositionMap.keySet()){
+				if(index.containsKey(token)){
+					index.get(token).add(new Postings(URL,tokenPositionMap.get(token)));
+				}
+				else
+				{
+					index.put(token,new ArrayList<Postings>() );
+					index.get(token).add(new Postings(URL,tokenPositionMap.get(token)));
+				}
+			}	
 	}
 
 }

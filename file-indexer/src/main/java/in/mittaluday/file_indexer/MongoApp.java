@@ -29,11 +29,6 @@ public class MongoApp {
 					Document doc =new Document("term", term);
 					doc.append("document_name", p.getDocumentName());
 					doc.append("tfidf",p.getTfidf());
-//					List<Integer> positions = p.getPositions();
-//					int [] posArray = new int[positions.size()];
-//					for(int i=0;i<positions.size();i++){
-//						posArray[i]=positions.get(i);
-//					}
 					doc.append("positions",p.getPositions());
 					documents.add(doc);
 				}

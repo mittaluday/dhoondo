@@ -8,7 +8,6 @@ public class Postings implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6784744162553674722L;
 	/**
 	 * 
 	 */

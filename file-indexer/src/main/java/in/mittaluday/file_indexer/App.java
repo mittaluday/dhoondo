@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class App {
 	static String indexFilePath = "C:/temp/index.ser";
+	static String anchorIndexFilePath = "C:/temp/anchorindex.ser";
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -24,15 +25,26 @@ public class App {
 		index = getIndex();
 		showIndex(index);
 	}
-
-	public static Map<String, List<Postings>> getIndex() throws ClassNotFoundException, IOException {
+	
+	public static Map<String, List<Postings>> getIndex() throws ClassNotFoundException, IOException{
+	   return getIndex(indexFilePath);
+	}
+	public static Map<String, List<Postings>> getAnchorTextIndex() throws ClassNotFoundException, IOException{
+		   return getIndex(anchorIndexFilePath);
+		}
+	public static Map<String, List<Postings>> getIndex(String file) throws ClassNotFoundException, IOException {
 		Map<String, List<Postings>> index;
-		File f = new File(indexFilePath);
+		File f = new File(file);
 		if (f.exists() && !f.isDirectory()) {
 			System.out.println("Index Exists!");
 			index = loadIndex();
 		} else {
+			if(file.equals(indexFilePath)){
 			index = createIndex();
+			}
+			else{
+				index = createAnchorIndex();	
+			}
 			serializeIndex(index);
 		}
 
@@ -86,6 +98,21 @@ public class App {
 		for (File file : dumpFileDirectory.listFiles()) {
 			counter += 1;
 			index.addTerms(file);
+			if (counter % 5000 == 0) {
+				System.out.println(counter + " Files indexed");
+			}
+		}
+		calculateTfidf(index);
+		return TermIndex.getIndex();
+	}
+	public static Map<String, List<Postings>> createAnchorIndex() throws ClassNotFoundException, IOException {
+		TermIndex index = new TermIndex();
+		AnchorTextProcessor anchor= new AnchorTextProcessor();
+		Map<String,String> anchorMap=anchor.startDataProcessing();
+		int counter = 0;
+		for (String s:anchorMap.keySet()) {
+			counter += 1;
+			index.addTerms(s,anchorMap.get(s));
 			if (counter % 5000 == 0) {
 				System.out.println(counter + " Files indexed");
 			}
