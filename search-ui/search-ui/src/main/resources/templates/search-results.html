@@ -13,21 +13,76 @@
 			  display: flex;
 			  align-items: center;
 			}
+			.footer, .header {
+				font-family:Helvetica, sans-serif, "Open Sans";
+				padding: 10px;
+				background-color:#eeeeee;
+			}
 	    </style>
 	</head>
 	<body>
+		<div class="header">
+		</div>
+		
 		<div class="container ">
 			<div class="row">
 				<div class="col-md-4">
-					<h1 >Dhoondo - Results</h1>	
+					<h3 ><a style="text-decoration:none; color:black;" href="/dhoondo">Dhoondo</a></h3>	
 				</div>
 			</div>
-			<p th:text="'Query: ' + ${query.queryString}"></p>
-			<div class = "row" th:each="result : ${results}">
+			
+			<div class="row">
+				<form action="#" method="post" th:action="@{/search}" th:object="${query}">
+					<div class="form-group col-md-6" style="margin-bottom:5px;">
+					    <input type="search" class="form-control" id="inputQuery" value="${query.queryString}" placeholder="search" th:field="*{queryString}">
+					    
+					    </input>
+					</div>
+					<div class="col-md-4">
+						<button type="submit" class="btn btn-default">
+							<span style="padding: 0px 10px 0px 10px;" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						</button>
+					</div>
+					
+				</form>
+			</div>
+			
+			<hr> </hr>
+			
+			<div class = "row" th:each="modelres : ${modelresult}">
 				<div class="col-md-6">
-					<h4><a th:href="${result}"><p th:text="${result}"></p></a></h4>
+					<!-- Title -->
+					<h4 style="margin:10px 0px 2px 0px;">
+						<a th:href="${modelres.url}" target="_blank">
+							<p style="margin: 0 0 0 0;" th:text="${modelres.title}">
+							</p>
+						</a>
+					</h4>
+					
+					<!-- URL -->
+					<a style="color:#00b386;" th:href="${modelres.url}" target="_blank"><p th:text="${modelres.url}"></p></a>
+					
+					<!-- Description -->
+					<p th:text="${modelres.description}"></p>	
+					
 				</div>
+				
 			</div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<hr> </hr>
+				</div>
+			</div>			
+			
+			
+		</div>
+		<div class="row footer">
+			<p align="center">Made with <span style="color:#FF4040;" class="glyphicon glyphicon-heart" aria-hidden="true"></span> by 
+			<a href="http://www.facebook.com/uday.mittal" target="_blank">Ed</a>, 
+			<a href="http://www.facebook.com/nirvan.sagar" target="_blank">Edd</a> n 
+			<a href="http://www.facebook.com/purvi.kaul.1" target="_blank">Eddy</a>
+			</p>
 		</div>
 	</body>
 </html>

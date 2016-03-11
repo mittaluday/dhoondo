@@ -32,18 +32,21 @@ public class QueryProcessor {
 			return new ArrayList<String>();
 		}
 		String[] queryTerms = query.split(" ");
-		findMatchingPages(queryTerms);
+		findMatchingPagesBasedOnTFIDF(queryTerms);
 		ArrayList<String> results = rankResults();
 		return results;
 	}
 
-	private void findMatchingPages(String[] queryTerms) {
+	private void findMatchingPagesBasedOnTFIDF(String[] queryTerms) {
 		for (String term : queryTerms) {
 			System.out.println(term);
 			ArrayList<Postings> postings = (ArrayList<Postings>) index.get(term);
 			if (postings != null) {
 				for (Postings p : postings) {
 					addPageScoreForTerm(p.getDocumentName(), p.getTfidf());
+					if(p.getDocumentTitle().contains(term)){
+						addPageScoreForTerm(p.getDocumentName(), 1.0);
+					}
 				}
 			}
 		}

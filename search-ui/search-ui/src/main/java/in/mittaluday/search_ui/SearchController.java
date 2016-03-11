@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import in.mittaluday.query_engine.QueryProcessor;
 import in.mittaluday.search_model.Query;
+import in.mittaluday.search_model.Result;
 
 @Controller
 public class SearchController {
@@ -24,7 +25,8 @@ public class SearchController {
 	//Load index once during the initialization of the controller
 	@PostConstruct
 	public void init() throws ClassNotFoundException, IOException{
-		qp = new QueryProcessor();
+		//TODO: Replace query processor by mongo query processor
+		//qp = new QueryProcessor();
 	}
 
 	@RequestMapping("/test")
@@ -56,15 +58,38 @@ public class SearchController {
 
     	List<String> stringResults = new ArrayList<String>();
 
-    	ArrayList<String> results = qp.queryIndex(queryString.toLowerCase());
+    	//TODO: Replace this by mongo query api
+    	
+    	/*ArrayList<String> results = qp.queryIndex(queryString.toLowerCase());
     	if(!results.isEmpty()){
     		for(String s : results){
     			stringResults.add(s);
     		}
+    	}*/
+    	
+    	//Model results
+    	for(int i = 0; i< 5; i++){
+    		stringResults.add("Result: " + String.valueOf(i));
     	}
     	
+    	
+    	List<Result> modelResultList = new ArrayList<Result>();
+    	for(int i =0; i< 5; i++){
+    		Result modelResult = new Result();
+    		modelResult.setTitle("Title: " +  String.valueOf(i));
+    		modelResult.setDescription("Lorem ipsum dolor sit amet, "
+    				+ "consectetur adipiscing elit, sed do eiusmod "
+    				+ "tempor incididunt ut labore et dolore magna "
+    				+ "aliqua. Ut enim ad minim veniam, quis nostrud "
+    				+ "exercitation ullamco laboris nisi ut aliquip "
+    				+ "ex ea commodo consequat. Duis aute irure dolor ");
+    		modelResult.setUrl("http://www.url"+String.valueOf(i)+".com");
+    		modelResultList.add(modelResult);
+    	}
+
 		model.addAttribute("query", query);
 		model.addAttribute("results", stringResults);
+		model.addAttribute("modelresult", modelResultList);
 		
 		System.out.println("Query searched for:" + query.getQueryString());
 		return "search-results";

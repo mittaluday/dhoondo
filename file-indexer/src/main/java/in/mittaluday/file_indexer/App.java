@@ -133,4 +133,9 @@ public class App {
 
 	}
 
+	public static Map<String, List<Postings>> getAnchorTextIndex() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
