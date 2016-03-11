@@ -32,6 +32,12 @@ public class Postings implements Serializable {
 	public void setPositions(List<Integer> positions) {
 		this.positions = positions;
 	}
+	
+	public Postings(String name,List<Integer> positions) {
+		// TODO Auto-generated constructor stub
+		this.documentName=name;
+		this.positions=positions;
+	}
 
 	public Postings(String name,List<Integer> positions, String documentTitle) {
 		// TODO Auto-generated constructor stub
