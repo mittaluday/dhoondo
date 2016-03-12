@@ -33,8 +33,8 @@ public class MongoApp {
 					doc.append("document_name", p.getDocumentName());
 					doc.append("tfidf",p.getTfidf());
 					doc.append("title", p.getDocumentTitle());
-
 					doc.append("positions",p.getPositions());
+					doc.append("documentlength", p.getDocumentLength());
 					documents.add(doc);
 				}
 			}	
@@ -54,6 +54,7 @@ public class MongoApp {
 					Document doc =new Document("term", term);
 					doc.append("document_name", p.getDocumentName());
 					doc.append("tfidf",p.getTfidf());
+					doc.append("documentlength", p.getDocumentLength());
 					documents.add(doc);
 				}
 			}	
