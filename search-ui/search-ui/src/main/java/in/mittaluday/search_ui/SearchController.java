@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import in.mittaluday.query_engine.QueryProcessor;
+import in.mittaluday.query_engine.Result;
 import in.mittaluday.search_model.Query;
-import in.mittaluday.search_model.Result;
 
 @Controller
 public class SearchController {
