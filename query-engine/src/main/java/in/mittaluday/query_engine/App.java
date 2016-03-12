@@ -14,7 +14,7 @@ public class App
     		System.out.println("No results to show");
     	}
     	for(Result s : results){
-    		System.out.println(s.description);
+    		System.out.println(s.getDescription());
     	}
     }
 }
