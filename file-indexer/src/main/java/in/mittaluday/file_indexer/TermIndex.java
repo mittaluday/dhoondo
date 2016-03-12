@@ -41,17 +41,18 @@ public class TermIndex implements Serializable {
 	public void addTerms(File file) throws FileNotFoundException {
 		FileTokenizer ft = new FileTokenizer(file);
 		ft.tokenizeFile();
+		long documentLength = ft.getListOfTokens().size();
 		String title = ft.getTitle();
 		corpus++;
 		Map<String,List<Integer>> tokenPositionMap = ft.getTokenPosition();
 		for (String token : tokenPositionMap.keySet()) {
 			if(index.containsKey(token)){
-				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token), title));
+				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token), title, documentLength));
 			}
 			else
 			{
 				index.put(token,new ArrayList<Postings>() );
-				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token), title));
+				index.get(token).add(new Postings(ft.getSubdomainURL(),tokenPositionMap.get(token), title, documentLength));
 			}
 
 		}
@@ -60,15 +61,16 @@ public class TermIndex implements Serializable {
 			corpus++;
 			StreamTokeniser ft=new StreamTokeniser(stream);
 			ft.tokenizeString();
+			long documentLength = ft.getListOfTokens().size();
 			Map<String,List<Integer>> tokenPositionMap = ft.getTokenPosition();
 			for (String token : tokenPositionMap.keySet()){
 				if(index.containsKey(token)){
-					index.get(token).add(new Postings(URL,tokenPositionMap.get(token)));
+					index.get(token).add(new Postings(URL,tokenPositionMap.get(token), documentLength));
 				}
 				else
 				{
 					index.put(token,new ArrayList<Postings>() );
-					index.get(token).add(new Postings(URL,tokenPositionMap.get(token)));
+					index.get(token).add(new Postings(URL,tokenPositionMap.get(token), documentLength));
 				}
 			}	
 
