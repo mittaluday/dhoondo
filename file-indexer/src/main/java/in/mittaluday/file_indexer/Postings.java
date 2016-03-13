@@ -65,12 +65,13 @@ public class Postings implements Serializable {
 		this.documentLength = documentLength;
 	}
 
-	public Postings(String name,List<Integer> positions, String documentTitle, long documentLength) {
+	public Postings(String name,List<Integer> positions, String documentTitle, long documentLength, double docVectorMagnitude) {
 		// TODO Auto-generated constructor stub
 		this.documentName=name;
 		this.positions=positions;
 		this.documentTitle = documentTitle;
 		this.documentLength = documentLength;
+		this.docVectorMagnitude = docVectorMagnitude;
 	}
 	
 	public String getDocumentName(){
