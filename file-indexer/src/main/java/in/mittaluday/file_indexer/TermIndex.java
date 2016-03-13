@@ -18,7 +18,6 @@ public class TermIndex implements Serializable {
 	 */
 	static Map<String, List<Postings>> index;
 	static long corpus;
-	static long ignored=0;
 
 	public static Map<String, List<Postings>> getIndex() {
 		return index;
@@ -48,13 +47,6 @@ public class TermIndex implements Serializable {
 	public void addTerms(File file) throws FileNotFoundException {
 		FileTokenizer ft = new FileTokenizer(file);
 		ft.tokenizeFile();
-		if(ft.getSubdomainURL().contains("student-affairs/contact/")){
-			ignored++;
-			if(ignored % 5000 == 0){
-				System.out.println("ignored " + ignored);
-			}
-			return;
-		}
 		long documentLength = ft.getListOfTokens().size();
 		String title = ft.getTitle();
 //		System.out.println("during termindex.addterm title :" + title);

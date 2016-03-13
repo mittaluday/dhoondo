@@ -21,7 +21,7 @@ public class AnchorTextProcessor {
 	public Map<String, String> startDataProcessing() throws IOException, ClassNotFoundException {
 		Properties prop = getConfigurationProperties();
 
-		File dumpFileDirectory = new File("C:/temp/dumpdata/htmlnewzip-full");
+		File dumpFileDirectory = new File("C:/temp/dumpdata/dump-html-new");
 //		File dumpFileDirectory = new File(prop.getProperty("CRAWL_FOLDER") + prop.getProperty("DUMP_HTML_FOLDER"));
 		System.out.println("html files : " + dumpFileDirectory.listFiles().length);
 		int counter = 0;
@@ -29,9 +29,9 @@ public class AnchorTextProcessor {
 			Document doc = Jsoup.parse(file, null);
 			Elements links = doc.select("a[href]");
 			for (Element link : links) {
-//				if (!link.attr("href").contains(".ics.uci.edu")) {
-//					continue;
-//				}
+				if (!link.attr("href").contains(".ics.uci.edu")) {
+					continue;
+				}
 				if (anchorIndex.containsKey(link.attr("href"))) {
 					anchorIndex.put(link.attr("href"), anchorIndex.get(link.attr("href")) + " " + link.text());
 				} else {
