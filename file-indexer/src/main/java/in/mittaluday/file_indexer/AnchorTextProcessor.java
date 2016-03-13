@@ -24,6 +24,7 @@ public class AnchorTextProcessor {
 		File dumpFileDirectory = new File("C:/temp/dumpdata/htmlnewzip-full");
 //		File dumpFileDirectory = new File(prop.getProperty("CRAWL_FOLDER") + prop.getProperty("DUMP_HTML_FOLDER"));
 		System.out.println("html files : " + dumpFileDirectory.listFiles().length);
+		int counter = 0;
 		for (File file : dumpFileDirectory.listFiles()) {
 			Document doc = Jsoup.parse(file, null);
 			Elements links = doc.select("a[href]");
@@ -35,7 +36,11 @@ public class AnchorTextProcessor {
 					anchorIndex.put(link.attr("href"), anchorIndex.get(link.attr("href")) + " " + link.text());
 				} else {
 					anchorIndex.put(link.attr("href"), link.text());
-				}
+				}				
+			}
+			counter++;
+			if (counter % 5000 == 0) {
+				System.out.println(counter + " Files anchored");
 			}
 
 		}

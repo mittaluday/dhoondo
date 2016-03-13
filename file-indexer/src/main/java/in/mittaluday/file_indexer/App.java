@@ -100,9 +100,9 @@ public class App {
 		for (File file : dumpFileDirectory.listFiles()) {
 			counter += 1;
 			index.addTerms(file);
-			if (counter % 5000 == 0) {
-				System.out.println(counter + " Files indexed");
-			}
+//			if (counter % 5000 == 0) {
+//				System.out.println(counter + " Files indexed");
+//			}
 		}
 		calculateTfidf(index);
 		return TermIndex.getIndex();

@@ -59,7 +59,6 @@ public class QueryProcessorMongo {
 	
 	
 	public QueryProcessorMongo() throws ClassNotFoundException, IOException {
-		index = in.mittaluday.file_indexer.App.getIndex();
 		cumulativePageScoreMap = new HashMap<String, Double>();
 		urlToTitleMap = new HashMap<String, String>();
 	}
