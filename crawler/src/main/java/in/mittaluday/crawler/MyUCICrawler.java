@@ -58,7 +58,8 @@ public class MyUCICrawler extends WebCrawler {
 		
 		if(href.contains("student-affairs/contact/") 
 				|| href.contains("archive.ics.uci.edu") 
-				|| href.contains("wics.ics.uci.edu")){
+				|| href.contains("wics.ics.uci.edu")
+				|| href.contains("mailto")){
 			return false;
 		}
 
@@ -153,7 +154,7 @@ public class MyUCICrawler extends WebCrawler {
 		File dumpFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
 																crawlerProperties.getProperty("DUMP_FOLDER"),
 																crawlerProperties.getProperty("DUMP_FILE")));
-		System.out.println("Trying to create " + dumpFile.getAbsolutePath());
+//		System.out.println("Trying to create " + dumpFile.getAbsolutePath());
 		dumpFile.createNewFile();
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpFile, true)));		
 		addNewURLHeader(out,url);
@@ -167,7 +168,7 @@ public class MyUCICrawler extends WebCrawler {
 		File dumpHtmlFile = new File(getDumpFileName(dumpFileNumber, crawlerProperties.getProperty("CRAWL_FOLDER"),
 				crawlerProperties.getProperty("DUMP_HTML_FOLDER"),
 				crawlerProperties.getProperty("DUMP_FILE")));
-		System.out.println("Trying to create " + dumpHtmlFile.getAbsolutePath());
+//		System.out.println("Trying to create " + dumpHtmlFile.getAbsolutePath());
 		dumpHtmlFile.createNewFile();
 		PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter(dumpHtmlFile, true)));		
 		addNewURLHeader(out,url);

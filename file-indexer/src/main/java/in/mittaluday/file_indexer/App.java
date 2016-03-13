@@ -23,7 +23,7 @@ public class App {
 
 		Map<String, List<Postings>> index;
 		index = getIndex();
-		showIndex(index);
+//		showIndex(index);
 	}
 	
 	public static Map<String, List<Postings>> getIndex() throws ClassNotFoundException, IOException{
