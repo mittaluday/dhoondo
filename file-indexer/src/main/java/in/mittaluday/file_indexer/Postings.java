@@ -8,13 +8,37 @@ public class Postings implements Serializable {
 	/**
 	 * 
 	 */
-	/**
-	 * 
-	 */
 	private String documentName;
 	private String documentTitle;
 	private long documentLength;
 	private double tfidf;
+	private double tf;
+	private double docVectorMagnitude;
+	
+	public double getTf() {
+		return tf;
+	}
+
+	public void setTf(double tf) {
+		this.tf = tf;
+	}
+
+	public double getDocVectorMagnitude() {
+		return docVectorMagnitude;
+	}
+
+	public void setDocVectorMagnitude(double docVectorMagnitude) {
+		this.docVectorMagnitude = docVectorMagnitude;
+	}
+
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
+	}
+
+	public void setTfidf(double tfidf) {
+		this.tfidf = tfidf;
+	}
+
 	public double getTfidf() {
 		return tfidf;
 	}

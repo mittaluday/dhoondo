@@ -38,6 +38,11 @@ public class TermIndex implements Serializable {
 		index = new HashMap<String, List<Postings>>();
 	}
 
+	/**
+	 * File addition to index
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
 	public void addTerms(File file) throws FileNotFoundException {
 		FileTokenizer ft = new FileTokenizer(file);
 		ft.tokenizeFile();
@@ -57,7 +62,14 @@ public class TermIndex implements Serializable {
 
 		}
 	}
-		public void addTerms(String URL,String stream) throws FileNotFoundException {
+	
+	/**
+	 * Anchor text term addition
+	 * @param URL
+	 * @param stream
+	 * @throws FileNotFoundException
+	 */
+	public void addTerms(String URL,String stream) throws FileNotFoundException {
 			corpus++;
 			StreamTokeniser ft=new StreamTokeniser(stream);
 			ft.tokenizeString();
