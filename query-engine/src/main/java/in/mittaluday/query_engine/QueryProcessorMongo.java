@@ -120,9 +120,6 @@ public class QueryProcessorMongo {
 				for (Document p : postings) {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
 					String title = p.getString("title");
-					System.out.println("document name : " + p.getString("document_name"));
-					System.out.println("title : " + title);
-					
 					urlToTitleMap.put(p.getString("document_name"), title);
 					if(title.contains(term)){
 						addPageScoreForTerm(p.getString("document_name"), 1.0);

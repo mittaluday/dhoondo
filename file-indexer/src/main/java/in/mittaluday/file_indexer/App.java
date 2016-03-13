@@ -93,16 +93,16 @@ public class App {
 	public static Map<String, List<Postings>> createIndex() throws FileNotFoundException {
 
 		String CRAWL_FOLDER = "C:/temp";
-		String DUMP_FOLDER = "/dumpdata/dumpnewzip-full";
+		String DUMP_FOLDER = "/dumpdata/dump-new";
 		TermIndex index = new TermIndex();
 		int counter = 0;
 		File dumpFileDirectory = new File(CRAWL_FOLDER + DUMP_FOLDER);
 		for (File file : dumpFileDirectory.listFiles()) {
 			counter += 1;
 			index.addTerms(file);
-//			if (counter % 5000 == 0) {
-//				System.out.println(counter + " Files indexed");
-//			}
+			if (counter % 5000 == 0) {
+				System.out.println(counter + " Files indexed");
+			}
 		}
 		calculateTfidf(index);
 		return TermIndex.getIndex();
