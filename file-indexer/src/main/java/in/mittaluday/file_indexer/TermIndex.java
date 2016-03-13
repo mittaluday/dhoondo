@@ -49,6 +49,7 @@ public class TermIndex implements Serializable {
 		ft.tokenizeFile();
 		long documentLength = ft.getListOfTokens().size();
 		String title = ft.getTitle();
+//		System.out.println("during termindex.addterm title :" + title);
 		HashMap<String, Integer> tokenCount = ft.getTokenCount();
 		double docVectorMagnitude = calculateDocVectorMagnitude(tokenCount);
 		corpus++;
