@@ -16,6 +16,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.Scanner;
 
 public class FileTokenizer {
@@ -156,6 +162,23 @@ public class FileTokenizer {
 			}
 		}
 		fileReader.close();
+	}
+	public void tokenizeFileJSoup() throws IOException{
+			Document doc = Jsoup.parse(file, null);
+			this.pageTitle=doc.title();
+			String text=doc.text();
+			int positionCounter = 0;
+			String tokens[] = text.split(delimeters);
+			for (int i = 0; i < tokens.length; i++) {
+				String trimmedToken = tokens[i].trim();
+				if (trimmedToken.length() > 0) {
+					listOfTokens.add(trimmedToken.toLowerCase());
+					incrementTokenCount(trimmedToken.toLowerCase());
+					addTokenPosition(trimmedToken.toLowerCase(), positionCounter++);
+				}
+			}
+			
+			
 	}
 
 	public void computeTokenFrequencies(List<String> tokens) {
