@@ -22,7 +22,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class MyUCICrawler extends WebCrawler {
 
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|jsp|gif|jpg|mat|php"
-            + "|png|mp3|mp3|zip|gz))$");
+            + "|png|mp3|mp4|zip|gz|pdf|cc|cpp|java|py|javac))$");
     
     private static int numFilesinDumpFolder = 1;    
     
@@ -49,19 +49,19 @@ public class MyUCICrawler extends WebCrawler {
 		try {
 			crawlerProperties = properties.getPropValues();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//logger.info("###Seed domain = " + href.contains(crawlerProperties.getProperty("SEED_DOMAIN"))+ ": href=" + href);
 		logger.info("###Seed domain = " + String.valueOf(!FILTERS.matcher(href).matches() &&
        		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
        		 !href.contains("?"))+ ": href=" + href + ": " + href.getClass()) ;
 		logger.info("********************************************************************************************");
 		
-		if(href.contains("?")){
-			logger.info("HELLOOOOOOOO");
+		if(href.contains("student-affairs/contact/") 
+				|| href.contains("archive.ics.uci.edu") 
+				|| href.contains("wics.ics.uci.edu")){
+			return false;
 		}
- 
+
 		return !FILTERS.matcher(href).matches() &&
         		 href.contains(crawlerProperties.getProperty("SEED_DOMAIN")) &&
         		 !href.contains("?") && (href.length()<=512);
@@ -92,7 +92,7 @@ public class MyUCICrawler extends WebCrawler {
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
              String title = htmlParseData.getTitle();
              
-             addLinksToPageRankerMap(url, links);
+//             addLinksToPageRankerMap(url, links);
              
              try {
 				addToDumpFiles(text.trim(), html.trim(), url, title, crawlerProperties);
