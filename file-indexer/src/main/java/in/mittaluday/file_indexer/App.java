@@ -37,15 +37,17 @@ public class App {
 		File f = new File(file);
 		if (f.exists() && !f.isDirectory()) {
 			System.out.println("Index Exists!");
-			index = loadIndex();
+			index = loadIndex(file);
 		} else {
 			if(file.equals(indexFilePath)){
-			index = createIndex();
+				index = createIndex();
+				serializeIndex(index, indexFilePath);
 			}
 			else{
-				index = createAnchorIndex();	
+				index = createAnchorIndex();
+				serializeIndex(index, anchorIndexFilePath);
 			}
-			serializeIndex(index);
+
 		}
 
 		return index;
@@ -65,9 +67,9 @@ public class App {
 		}
 	}
 
-	public static void serializeIndex(Map<String, List<Postings>> index) throws IOException {
+	public static void serializeIndex(Map<String, List<Postings>> index, String filePath) throws IOException {
 		System.out.println("TermObject Size: " + index.size());
-		File indexFile = new File(indexFilePath);
+		File indexFile = new File(filePath);
 		if (!indexFile.exists()) {
 			indexFile.createNewFile();
 		}
@@ -91,16 +93,16 @@ public class App {
 	public static Map<String, List<Postings>> createIndex() throws FileNotFoundException {
 
 		String CRAWL_FOLDER = "C:/temp";
-		String DUMP_FOLDER = "/dumpdata";
+		String DUMP_FOLDER = "/dumpdata/dumpnewzip-full";
 		TermIndex index = new TermIndex();
 		int counter = 0;
 		File dumpFileDirectory = new File(CRAWL_FOLDER + DUMP_FOLDER);
 		for (File file : dumpFileDirectory.listFiles()) {
 			counter += 1;
 			index.addTerms(file);
-			if (counter % 5000 == 0) {
-				System.out.println(counter + " Files indexed");
-			}
+//			if (counter % 5000 == 0) {
+//				System.out.println(counter + " Files indexed");
+//			}
 		}
 		calculateTfidf(index);
 		return TermIndex.getIndex();
@@ -117,13 +119,14 @@ public class App {
 				System.out.println(counter + " Files indexed");
 			}
 		}
+		System.out.println("indexed " + counter + " anchor strings");
 		calculateTfidf(index);
 		return TermIndex.getIndex();
 	}
 
-	public static Map<String, List<Postings>> loadIndex() throws IOException, ClassNotFoundException {
+	public static Map<String, List<Postings>> loadIndex(String file) throws IOException, ClassNotFoundException {
 
-		File indexFile = new File(indexFilePath);
+		File indexFile = new File(file);
 		FileInputStream f = new FileInputStream(indexFile);
 		ObjectInputStream s = new ObjectInputStream(f);
 		HashMap<String, List<Postings>> index = (HashMap<String, List<Postings>>) s.readObject();
@@ -132,7 +135,5 @@ public class App {
 		return index;
 
 	}
-
-
 
 }

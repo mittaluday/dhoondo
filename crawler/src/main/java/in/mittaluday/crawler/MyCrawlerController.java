@@ -65,7 +65,7 @@ public class MyCrawlerController {
 	        long endTime = System.currentTimeMillis();
 	        logger.info(logSeq+ "Total time for crawling: " + (endTime-startTime));
 	        
-	        serializeMaps();
+	        //serializeMaps();
 	        
 		} catch (Exception e) {
 			e.printStackTrace();

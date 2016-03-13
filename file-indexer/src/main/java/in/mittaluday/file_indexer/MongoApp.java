@@ -29,12 +29,14 @@ public class MongoApp {
 			ArrayList<Postings> postings = (ArrayList<Postings>) index.get(term);
 			if (postings != null) {
 				for (Postings p : postings) {
+//					System.out.println("during mongo db add title :" + p.getDocumentTitle());
 					Document doc =new Document("term", term);
 					doc.append("document_name", p.getDocumentName());
 					doc.append("tfidf",p.getTfidf());
 					doc.append("title", p.getDocumentTitle());
-
 					doc.append("positions",p.getPositions());
+					doc.append("documentlength", p.getDocumentLength());
+					doc.append("docVectorMagnitude", p.getDocVectorMagnitude());
 					documents.add(doc);
 				}
 			}	
@@ -54,6 +56,7 @@ public class MongoApp {
 					Document doc =new Document("term", term);
 					doc.append("document_name", p.getDocumentName());
 					doc.append("tfidf",p.getTfidf());
+					doc.append("documentlength", p.getDocumentLength());
 					documents.add(doc);
 				}
 			}	
@@ -68,7 +71,7 @@ public class MongoApp {
 		Iterator<String> it = collectionNames.iterator();
 		while(it.hasNext()){
 			String collectionName = it.next();
-			if(collectionName.equals("statistic")){
+			if(collectionName.equals("statistics")){
 				hasStatistics = true;
 			}
 		}
@@ -80,10 +83,14 @@ public class MongoApp {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-		// TODO Auto-generated method stub
-      makeCollection();
-      makeAnchorTextCollection();
-      addCorpusToCollection();
+		db.getCollection("index").drop();
+		db.getCollection("anchorindex").drop();
+		db.getCollection("statistics").drop();
+		makeCollection();
+		System.out.println("collection done");
+		makeAnchorTextCollection();
+		System.out.println("anchor text collection done");
+		addCorpusToCollection();
 	}	
 
 }

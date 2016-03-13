@@ -83,7 +83,7 @@ public class CrawledDataProcessor {
 
 	private void saveFileMetaToRepository(){
 		fileIndexRepo.addFileIndex(fileTokenizer.getFile().getName(), new Date(), new Date(), 
-				fileTokenizer.getListOfTokens().size(), fileTokenizer.getSubdomain());
+				fileTokenizer.getListOfTokens().size(), fileTokenizer.getSubdomain(), fileTokenizer.getTitle());
 	}
 	
 	private void saveTokenAggregatesToRepository(){

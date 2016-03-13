@@ -21,23 +21,31 @@ public class AnchorTextProcessor {
 	public Map<String, String> startDataProcessing() throws IOException, ClassNotFoundException {
 		Properties prop = getConfigurationProperties();
 
-	//	File dumpFileDirectory = new File("/home/purvi/Desktop/ir/info-retrieval-w16/crawler-data/dump-html-new1");
-		File dumpFileDirectory = new File(prop.getProperty("CRAWL_FOLDER") + prop.getProperty("DUMP_HTML_FOLDER"));
+		File dumpFileDirectory = new File("C:/temp/dumpdata/htmlnewzip-full");
+//		File dumpFileDirectory = new File(prop.getProperty("CRAWL_FOLDER") + prop.getProperty("DUMP_HTML_FOLDER"));
+		System.out.println("html files : " + dumpFileDirectory.listFiles().length);
+		int counter = 0;
 		for (File file : dumpFileDirectory.listFiles()) {
 			Document doc = Jsoup.parse(file, null);
 			Elements links = doc.select("a[href]");
 			for (Element link : links) {
-				if (!link.attr("href").contains(".ics.uci.edu")) {
-					continue;
-				}
+//				if (!link.attr("href").contains(".ics.uci.edu")) {
+//					continue;
+//				}
 				if (anchorIndex.containsKey(link.attr("href"))) {
 					anchorIndex.put(link.attr("href"), anchorIndex.get(link.attr("href")) + " " + link.text());
 				} else {
 					anchorIndex.put(link.attr("href"), link.text());
-				}
+				}				
+			}
+			counter++;
+			if (counter % 5000 == 0) {
+				System.out.println(counter + " Files anchored");
 			}
 
 		}
+		System.out.println("anchorindex size " + anchorIndex.size());
+		showIndex(anchorIndex);
 		return anchorIndex;
 
 	}
@@ -46,7 +54,7 @@ public class AnchorTextProcessor {
 		int counter = 0;
 		for (String term : index.keySet()) {
 			counter += 1;
-			System.out.println(term + index.get(term));
+			System.out.println(term + " " + index.get(term));
 			if (counter == 50) {
 				break;
 			}
