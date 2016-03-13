@@ -81,16 +81,36 @@ public class MongoApp {
 		db.getCollection("statistics").drop();
 		db.getCollection("statistics").insertOne(new Document("corpussize", n));
 	}
+	
+	private static void makeURLFilenameCollection() {
+		Map<String, String> urlToFileName = AnchorTextProcessor.getUrlToFileName();
+		List<Document> documents =new ArrayList<Document>();
+		int counter=0;
+		for(Map.Entry<String, String>entry: urlToFileName.entrySet()){
+			counter++;
+			if(counter%2000 == 0){
+				System.out.println("url: " + entry.getKey() + " filename: " + entry.getValue());
+			}
+			Document d = new Document();
+			d.append("url", entry.getKey());
+			d.append("filename", entry.getValue());
+			documents.add(d);
+		}
+		db.getCollection("urltofilename").insertMany(documents);
+	}	
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		db.getCollection("index").drop();
 		db.getCollection("anchorindex").drop();
 		db.getCollection("statistics").drop();
+		db.getCollection("urltofilename").drop();
 		makeCollection();
 		System.out.println("collection done");
 		makeAnchorTextCollection();
 		System.out.println("anchor text collection done");
+		makeURLFilenameCollection();
+		System.out.println("URL Filename collection done");
 		addCorpusToCollection();
-	}	
+	}
 
 }
