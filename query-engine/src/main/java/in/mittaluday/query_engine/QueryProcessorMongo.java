@@ -61,6 +61,7 @@ public class QueryProcessorMongo {
 	public QueryProcessorMongo() throws ClassNotFoundException, IOException {
 		cumulativePageScoreMap = new HashMap<String, Double>();
 		urlToTitleMap = new HashMap<String, String>();
+		cosineScoreMap = new HashMap<String, Tuple>();
 	}
 
 	public ArrayList<Result> queryIndex(String query) {
