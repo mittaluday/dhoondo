@@ -61,6 +61,7 @@ public class QueryProcessorMongo {
 	public QueryProcessorMongo() throws ClassNotFoundException, IOException {
 		index = in.mittaluday.file_indexer.App.getIndex();
 		cumulativePageScoreMap = new HashMap<String, Double>();
+		urlToTitleMap = new HashMap<String, String>();
 	}
 
 	public ArrayList<Result> queryIndex(String query) {
@@ -115,10 +116,14 @@ public class QueryProcessorMongo {
 		for (String term : queryTerms) {
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
 					.into(new ArrayList<Document>());
+			System.out.println("found " + postings.size() + " for term " + term);
 			if (postings != null) {
 				for (Document p : postings) {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
 					String title = p.getString("title");
+					System.out.println("document name : " + p.getString("document_name"));
+					System.out.println("title : " + title);
+					
 					urlToTitleMap.put(p.getString("document_name"), title);
 					if(title.contains(term)){
 						addPageScoreForTerm(p.getString("document_name"), 1.0);
