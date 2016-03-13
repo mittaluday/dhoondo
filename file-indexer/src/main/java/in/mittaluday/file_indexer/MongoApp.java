@@ -35,6 +35,7 @@ public class MongoApp {
 					doc.append("title", p.getDocumentTitle());
 					doc.append("positions",p.getPositions());
 					doc.append("documentlength", p.getDocumentLength());
+					doc.append("docVectorMagnitude", p.getDocVectorMagnitude());
 					documents.add(doc);
 				}
 			}	
