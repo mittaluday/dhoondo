@@ -10,8 +10,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
+import org.jsoup.Jsoup;
 
 import in.mittaluday.file_indexer.MongoApp;
 import in.mittaluday.file_indexer.Postings;
@@ -23,41 +26,44 @@ public class QueryProcessorMongo {
 	HashMap<String, Double> cosineMap;
 	HashMap<String, String> urlToTitleMap;
 
-	
 	/**
-	 * Class to store Numerator
-	 * and Denominator tuple for 
-	 * cosine similarity
+	 * Class to store Numerator and Denominator tuple for cosine similarity
+	 * 
 	 * @author udaymittal
 	 *
 	 */
-	class Tuple{
+	class Tuple {
 
 		double numerator;
 		double denominator;
 		double score;
+
 		public Tuple(double numerator, double denominator) {
 			this.numerator = numerator;
-			this.denominator=denominator;
+			this.denominator = denominator;
 		}
+
 		public double getNumerator() {
 			return numerator;
 		}
+
 		public void setNumerator(double numerator) {
 			this.numerator = numerator;
 		}
+
 		public double getDenominator() {
 			return denominator;
 		}
+
 		public void setDenominator(double denominator) {
 			this.denominator = denominator;
 		}
-		public double getScore(){
-			return numerator/denominator;
+
+		public double getScore() {
+			return numerator / denominator;
 		}
 	}
-	
-	
+
 	public QueryProcessorMongo() throws ClassNotFoundException, IOException {
 		cumulativePageScoreMap = new HashMap<String, Double>();
 		urlToTitleMap = new HashMap<String, String>();
@@ -71,27 +77,69 @@ public class QueryProcessorMongo {
 		findMatchingPages(queryTerms);
 		findMatchingPagesInAnchorText(queryTerms);
 		ArrayList<String> stringResults = rankResults();
-		ArrayList<Result> results = createResultStructureList(stringResults);
+		ArrayList<Result> results = createResultStructureList(stringResults,query);
 		return results;
-		
-		//For cosine similarity use following
-		
-		//findMatchingPagesBasedOnCosine(queryTerms);
-		//ArrayList<String> stringResults = rankCosineResults();
-		
+
+		// For cosine similarity use following
+
+		// findMatchingPagesBasedOnCosine(queryTerms);
+		// ArrayList<String> stringResults = rankCosineResults();
+
 	}
 
-	private ArrayList<Result> createResultStructureList(ArrayList<String> stringResults) {
+	private ArrayList<Result> createResultStructureList(ArrayList<String> stringResults, String query) {
 		ArrayList<Result> results = new ArrayList<Result>();
-		for(int i=0;i<stringResults.size();i++){
-			results.add(new Result(stringResults.get(i), urlToTitleMap.get(stringResults.get(i))));
+		for (int i = 0; i < stringResults.size(); i++) {
+			String[] queryterms = query.split(" ");
+			Result r = new Result(stringResults.get(i), urlToTitleMap.get(stringResults.get(i)));
+			List<Document> file = (List<Document>) MongoApp.db.getCollection("urltofilename")
+					.find(new Document("url", stringResults.get(i)));
+			StringBuilder displaytext = new StringBuilder();
+			if (!file.isEmpty()) {
+				org.jsoup.nodes.Document doc = Jsoup.parse(file.get(0).toString(), null);
+				String text = doc.text();
+				for (int j = 0; j < queryterms.length; j++) {
+					String REGEX = "\\b" + queryterms[j] + "\\b";
+					Pattern p = Pattern.compile(REGEX);
+					Matcher m = p.matcher(text);
+					int start, end;
+					if (m.find()) {
+						int pos = m.start();
+						if (pos == 0) {
+							start = pos;
+							end = text.indexOf(" ", m.end() + 40);
+							displaytext.append(text.substring(start, end));
+							displaytext.append("(...)");
+						}
+						if (pos > 0 && m.end() <= text.length() - 20) {
+							start = text.indexOf(" ", m.start() - 20);
+							end = text.indexOf(" ", m.end() + 20);
+							// r.setDescription(text.substring(start, end));
+							displaytext.append(text.substring(start, end));
+							displaytext.append("(...)");
+						}
+						if (m.end() == text.length()) {
+							end = m.end();
+							start = text.indexOf(" ", m.start() - 40);
+							displaytext.append("(...)");
+							displaytext.append(text.substring(start, end));
+
+						}
+
+					}
+				}
+				r.setDescription(displaytext.toString());
+
+			}
+
 		}
 		return results;
 	}
 
 	/**
-	 * Just plain cumulative TFIDF score for ranking
-	 * This should be used to calculate original NDCG 
+	 * Just plain cumulative TFIDF score for ranking This should be used to
+	 * calculate original NDCG
+	 * 
 	 * @param queryTerms
 	 */
 	@SuppressWarnings("unused")
@@ -106,9 +154,10 @@ public class QueryProcessorMongo {
 			}
 		}
 	}
-	
+
 	/**
 	 * TFIDF + Title for scoring
+	 * 
 	 * @param queryTerms
 	 */
 	private void findMatchingPages(String[] queryTerms) {
@@ -122,9 +171,9 @@ public class QueryProcessorMongo {
 					String title = p.getString("title");
 					System.out.println("document name : " + p.getString("document_name"));
 					System.out.println("title : " + title);
-					
+
 					urlToTitleMap.put(p.getString("document_name"), title);
-					if(title.contains(term)){
+					if (title.contains(term)) {
 						addPageScoreForTerm(p.getString("document_name"), 1.0);
 					}
 				}
@@ -134,6 +183,7 @@ public class QueryProcessorMongo {
 
 	/**
 	 * Anchor text scoring
+	 * 
 	 * @param queryTerms
 	 */
 	private void findMatchingPagesInAnchorText(String[] queryTerms) {
@@ -145,63 +195,64 @@ public class QueryProcessorMongo {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
 				}
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	 * Cosine Similarity
+	 * 
 	 * @param queryTerms
 	 */
 	@SuppressWarnings({ "unused", "unchecked" })
 	private void findMatchingPagesBasedOnCosine(String[] queryTerms) {
-		//Assuming tf for every query term as 1 i.e. every term occurs only once in the query
-		for(String term: queryTerms){
+		// Assuming tf for every query term as 1 i.e. every term occurs only
+		// once in the query
+		for (String term : queryTerms) {
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
 					.into(new ArrayList<Document>());
 			if (postings != null) {
 				for (Document p : postings) {
-					updateCosineScoreForTerm(p.getString("document_name"), 
-							((ArrayList<Integer>) p.get("positions")).size(),
-							p.getDouble("docVectorMagnitude"));
+					updateCosineScoreForTerm(p.getString("document_name"),
+							((ArrayList<Integer>) p.get("positions")).size(), p.getDouble("docVectorMagnitude"));
 				}
 			}
 		}
 		cosineMap = (HashMap<String, Double>) convertMapforSorting(cosineScoreMap);
 	}
-	
+
 	/**
-	 * Method used by findMatchingPagesBasedOnCosine
-	 * for updatingt the numerator
+	 * Method used by findMatchingPagesBasedOnCosine for updatingt the numerator
+	 * 
 	 * @param documentName
 	 * @param termFrequency
 	 * @param docVectorMagnitude
 	 */
-	private void updateCosineScoreForTerm(String documentName, int termFrequency, double docVectorMagnitude){
-		if(cosineScoreMap.containsKey(documentName)){
-			cosineScoreMap.get(documentName).setNumerator(
-					cosineScoreMap.get(documentName).getNumerator() + termFrequency);
-		}
-		else{
+	private void updateCosineScoreForTerm(String documentName, int termFrequency, double docVectorMagnitude) {
+		if (cosineScoreMap.containsKey(documentName)) {
+			cosineScoreMap.get(documentName)
+					.setNumerator(cosineScoreMap.get(documentName).getNumerator() + termFrequency);
+		} else {
 			cosineScoreMap.put(documentName, new Tuple(termFrequency, docVectorMagnitude));
 		}
 	}
 
 	/**
-	 * Private method to convert a <String, Tuple> map 
-	 * to a <String, Double> Map
+	 * Private method to convert a <String, Tuple> map to a <String, Double> Map
+	 * 
 	 * @param map
 	 * @return
 	 */
-	private Map<String, Double> convertMapforSorting(HashMap<String, Tuple> map){
+	private Map<String, Double> convertMapforSorting(HashMap<String, Tuple> map) {
 		Map<String, Double> convertedMap = new HashMap<String, Double>();
 		for (String doc : map.keySet()) {
 			convertedMap.put(doc, map.get(doc).getScore());
 		}
 		return convertedMap;
 	}
-	
+
 	/**
 	 * Rank cosine results
+	 * 
 	 * @return
 	 */
 	private ArrayList<String> rankCosineResults() {
@@ -212,7 +263,7 @@ public class QueryProcessorMongo {
 		}
 		return pages;
 	}
-	
+
 	private void addPageScoreForTerm(String documentName, double tfidf) {
 		if (cumulativePageScoreMap.containsKey(documentName)) {
 			cumulativePageScoreMap.put(documentName, cumulativePageScoreMap.get(documentName) + tfidf);
@@ -229,8 +280,6 @@ public class QueryProcessorMongo {
 		}
 		return pages;
 	}
-	
-	
 
 	public <K, V extends Comparable<? super V>> HashMap<K, V> sortMap(HashMap<K, V> map) {
 		List<Map.Entry<K, V>> list = new LinkedList<Entry<K, V>>(map.entrySet());
