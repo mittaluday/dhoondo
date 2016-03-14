@@ -70,11 +70,13 @@ public class SearchController {
     	}
 
     	//TODO: Uncomment the following line to interface with query engine
-    	/*List<Result> modelResultList = qp.queryIndex(queryString.toLowerCase());
+    	List<Result> modelResultList = qp.queryIndex(queryString);
+    	System.out.println("got " + modelResultList.size() + "results");
     	
     	//Process description to make search terms strong
-    	for (Result result : modelResultList) {
+    	for (Result result : modelResultList) {    		
 			String description = result.getDescription();
+			System.out.println("Desc1 :" + description);
 			String[] words = description.split(" ");
 			StringBuilder descriptionBuilder = new StringBuilder();
 			for (String word : words) {
@@ -85,38 +87,38 @@ public class SearchController {
 					descriptionBuilder.append(word + " ");
 				}
 			}
-			result.setDescription(descriptionBuilder.toString());
-					
-		}*/
+			System.out.println("Desc2 :" + descriptionBuilder.toString());
+			result.setDescription(descriptionBuilder.toString());					
+		}
     	
     	//TODO:Comment out the following when the results are fetched from query engine
-    	List<Result> modelResultList = new ArrayList<Result>();
-    	for(int i =0; i< 5; i++){
-    		Result modelResult = new Result();
-    		modelResult.setTitle("Title: " +  String.valueOf(i));
-    		modelResult.setDescription("Lorem ipsum dolor sit amet, "
-    				+ "consectetur adipiscing elit, sed do eiusmod "
-    				+ "tempor incididunt ut labore et dolore magna "
-    				+ "aliqua. Ut enim ad minim veniam, quis nostrud "
-    				+ "exercitation ullamco laboris nisi ut aliquip "
-    				+ "ex ea commodo consequat. Duis aute irure dolor ");
-    		modelResult.setUrl("http://www.url"+String.valueOf(i)+".com");
-    		
-    		String description = modelResult.getDescription();
-			String[] words = description.split(" ");
-			StringBuilder descriptionBuilder = new StringBuilder();
-			for (String word : words) {
-				if(((SubStringHashSet) queryTermSet).containsSubString(word.toLowerCase())){
-					descriptionBuilder.append("<strong>"+word+"</strong> ");
-				}
-				else {
-					descriptionBuilder.append(word + " ");
-				}
-			}
-			modelResult.setDescription(descriptionBuilder.toString());
-			
-    		modelResultList.add(modelResult);
-    	}
+//    	List<Result> modelResultList = new ArrayList<Result>();
+//    	for(int i =0; i< 5; i++){
+//    		Result modelResult = new Result();
+//    		modelResult.setTitle("Title: " +  String.valueOf(i));
+//    		modelResult.setDescription("Lorem ipsum dolor sit amet, "
+//    				+ "consectetur adipiscing elit, sed do eiusmod "
+//    				+ "tempor incididunt ut labore et dolore magna "
+//    				+ "aliqua. Ut enim ad minim veniam, quis nostrud "
+//    				+ "exercitation ullamco laboris nisi ut aliquip "
+//    				+ "ex ea commodo consequat. Duis aute irure dolor ");
+//    		modelResult.setUrl("http://www.url"+String.valueOf(i)+".com");
+//    		
+//    		String description = modelResult.getDescription();
+//			String[] words = description.split(" ");
+//			StringBuilder descriptionBuilder = new StringBuilder();
+//			for (String word : words) {
+//				if(((SubStringHashSet) queryTermSet).containsSubString(word.toLowerCase())){
+//					descriptionBuilder.append("<strong>"+word+"</strong> ");
+//				}
+//				else {
+//					descriptionBuilder.append(word + " ");
+//				}
+//			}
+//			modelResult.setDescription(descriptionBuilder.toString());
+//			
+//    		modelResultList.add(modelResult);
+//    	}
     	//TODO:Comment out till here
     	
     	
