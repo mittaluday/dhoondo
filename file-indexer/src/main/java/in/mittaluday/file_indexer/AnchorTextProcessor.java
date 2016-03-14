@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,21 +18,28 @@ import org.jsoup.select.Elements;
 public class AnchorTextProcessor {
 
 	public HashMap<String, String> anchorIndex = new HashMap<String, String>();
+	private static HashMap<String, String> urlToFileName = new HashMap<String, String>();
 
 	public Map<String, String> startDataProcessing() throws IOException, ClassNotFoundException {
 		Properties prop = getConfigurationProperties();
 
-		File dumpFileDirectory = new File("C:/temp/dumpdata/htmlnewzip-full");
+		File dumpFileDirectory = new File("C:/temp/dumpdata/dump-html-new");
 //		File dumpFileDirectory = new File(prop.getProperty("CRAWL_FOLDER") + prop.getProperty("DUMP_HTML_FOLDER"));
 		System.out.println("html files : " + dumpFileDirectory.listFiles().length);
 		int counter = 0;
 		for (File file : dumpFileDirectory.listFiles()) {
+			Scanner fileReader = new Scanner(file);
+			if (fileReader.hasNextLine()) {
+				String url = fileReader.nextLine().trim();
+				urlToFileName.put(url, file.getAbsolutePath());
+			}			
+			fileReader.close();
 			Document doc = Jsoup.parse(file, null);
 			Elements links = doc.select("a[href]");
 			for (Element link : links) {
-//				if (!link.attr("href").contains(".ics.uci.edu")) {
-//					continue;
-//				}
+				if (!link.attr("href").contains(".ics.uci.edu")) {
+					continue;
+				}
 				if (anchorIndex.containsKey(link.attr("href"))) {
 					anchorIndex.put(link.attr("href"), anchorIndex.get(link.attr("href")) + " " + link.text());
 				} else {
@@ -45,7 +53,7 @@ public class AnchorTextProcessor {
 
 		}
 		System.out.println("anchorindex size " + anchorIndex.size());
-		showIndex(anchorIndex);
+//		showIndex(anchorIndex);
 		return anchorIndex;
 
 	}
@@ -78,6 +86,10 @@ public class AnchorTextProcessor {
 			inputStream.close();
 		}
 		return prop;
+	}
+
+	public static HashMap<String, String> getUrlToFileName() {
+		return urlToFileName;
 	}
 
 }
