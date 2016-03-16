@@ -8,13 +8,13 @@ public class App
     public static void main( String[] args ) throws ClassNotFoundException, IOException
     {
     	QueryProcessorMongo qp = new QueryProcessorMongo();
-    	String queryString = "Crista Lopes";
-    	ArrayList<Result> results = qp.queryIndex(queryString.toLowerCase());
+    	String queryString = "information retrieval";
+    	ArrayList<Result> results = qp.queryIndex(queryString);
     	if(results.isEmpty()){
     		System.out.println("No results to show");
     	}
     	for(Result s : results){
-    		System.out.println(s.getUrl() + " " + s.getTitle());
+    		System.out.println(s.getUrl()/* + " " + s.getTitle() + " "+ s.getDescription()*/);
     	}
     }
 }
