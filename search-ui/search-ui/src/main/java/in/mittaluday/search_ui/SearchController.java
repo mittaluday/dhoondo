@@ -91,6 +91,9 @@ public class SearchController {
     	
     	//TODO:Comment out the following when the results are fetched from query engine
     	List<Result> modelResultList = new ArrayList<Result>();
+    	if(modelResultList.size() == 0){
+    		return "no-results";
+    	}
     	for(int i =0; i< 5; i++){
     		Result modelResult = new Result();
     		modelResult.setTitle("Title: " +  String.valueOf(i));
