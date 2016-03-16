@@ -1,5 +1,6 @@
 package in.mittaluday.query_engine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,13 +71,14 @@ public class QueryProcessorMongo {
 		cosineScoreMap = new HashMap<String, Tuple>();
 	}
 
-	public ArrayList<Result> queryIndex(String query) {
+	public ArrayList<Result> queryIndex(String query) throws IOException {
 		if (query == null || query.isEmpty()) {
 			return new ArrayList<Result>();
 		}
 		String[] queryTerms = query.split(" ");
 		findMatchingPages(queryTerms);
 		findMatchingPagesInAnchorText(queryTerms);
+		System.out.println("map size =" + cumulativePageScoreMap.size());
 		ArrayList<String> stringResults = rankResults();
 		ArrayList<Result> results = createResultStructureList(stringResults,query);
 		return results;
@@ -88,17 +90,24 @@ public class QueryProcessorMongo {
 
 	}
 
-	private ArrayList<Result> createResultStructureList(ArrayList<String> stringResults, String query) {
+	private ArrayList<Result> createResultStructureList(ArrayList<String> stringResults, String query) throws IOException {
 		ArrayList<Result> results = new ArrayList<Result>();
 		for (int i = 0; i < stringResults.size(); i++) {
 			String[] queryterms = query.split(" ");
 			Result r = new Result(stringResults.get(i), urlToTitleMap.get(stringResults.get(i)));
-			List<Document> file = (List<Document>) MongoApp.db.getCollection("urltofilename")
-					.find(new Document("url", stringResults.get(i)));
+			if(r.getTitle() == null){
+				System.out.println("found null");
+				continue;
+			}
+			List<Document> file = MongoApp.db.getCollection("urltofilename")
+					.find(new Document("url", stringResults.get(i))).into(new ArrayList<Document>());
 			StringBuilder displaytext = new StringBuilder();
 			if (!file.isEmpty()) {
-				org.jsoup.nodes.Document doc = Jsoup.parse(file.get(0).toString(), null);
+//				System.out.println(file.get(0).getString("filename"));
+				File f = new File(file.get(0).getString("filename"));
+				org.jsoup.nodes.Document doc = Jsoup.parse(f, null);
 				String text = doc.text();
+//				System.out.println("doc.text :" + text);
 				for (int j = 0; j < queryterms.length; j++) {
 					String REGEX = "\\b" + queryterms[j] + "\\b";
 					Pattern p = Pattern.compile(REGEX);
@@ -115,7 +124,6 @@ public class QueryProcessorMongo {
 						if (pos > 0 && m.end() <= text.length() - 20) {
 							start = text.indexOf(" ", m.start() - 20);
 							end = text.indexOf(" ", m.end() + 20);
-							// r.setDescription(text.substring(start, end));
 							displaytext.append(text.substring(start, end));
 							displaytext.append("(...)");
 						}
@@ -124,15 +132,13 @@ public class QueryProcessorMongo {
 							start = text.indexOf(" ", m.start() - 40);
 							displaytext.append("(...)");
 							displaytext.append(text.substring(start, end));
-
 						}
-
 					}
 				}
+//				System.out.println("setting descr: " + displaytext.toString());
 				r.setDescription(displaytext.toString());
-
 			}
-
+			results.add(r);
 		}
 		return results;
 	}
@@ -146,6 +152,7 @@ public class QueryProcessorMongo {
 	@SuppressWarnings("unused")
 	private void findMatchingPagesOld(String[] queryTerms) {
 		for (String term : queryTerms) {
+			term = term.toLowerCase();
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
 					.into(new ArrayList<Document>());
 			if (postings != null) {
@@ -163,9 +170,10 @@ public class QueryProcessorMongo {
 	 */
 	private void findMatchingPages(String[] queryTerms) {
 		for (String term : queryTerms) {
+			term = term.toLowerCase();
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
 					.into(new ArrayList<Document>());
-			System.out.println("found " + postings.size() + " for term " + term);
+			System.out.println("found " + postings.size() + " results for " + term);
 			if (postings != null) {
 				for (Document p : postings) {
 					addPageScoreForTerm(p.getString("document_name"), p.getDouble("tfidf"));
@@ -186,6 +194,7 @@ public class QueryProcessorMongo {
 	 */
 	private void findMatchingPagesInAnchorText(String[] queryTerms) {
 		for (String term : queryTerms) {
+			term = term.toLowerCase();
 			List<Document> postings = MongoApp.db.getCollection("anchorindex").find(new Document("term", term))
 					.into(new ArrayList<Document>());
 			if (postings != null) {
@@ -206,6 +215,7 @@ public class QueryProcessorMongo {
 		// Assuming tf for every query term as 1 i.e. every term occurs only
 		// once in the query
 		for (String term : queryTerms) {
+			term = term.toLowerCase();
 			List<Document> postings = MongoApp.db.getCollection("index").find(new Document("term", term))
 					.into(new ArrayList<Document>());
 			if (postings != null) {
@@ -256,8 +266,8 @@ public class QueryProcessorMongo {
 	private ArrayList<String> rankCosineResults() {
 		cosineMap = sortMap(cosineMap);
 		ArrayList<String> pages = new ArrayList<String>(cosineMap.keySet());
-		if (pages.size() > 9) {
-			return new ArrayList<String>(pages.subList(0, 9));
+		if (pages.size() > 19) {
+			return new ArrayList<String>(pages.subList(0, 19));
 		}
 		return pages;
 	}
@@ -271,10 +281,11 @@ public class QueryProcessorMongo {
 	}
 
 	private ArrayList<String> rankResults() {
+		
 		cumulativePageScoreMap = sortMap(cumulativePageScoreMap);
 		ArrayList<String> pages = new ArrayList<String>(cumulativePageScoreMap.keySet());
-		if (pages.size() > 9) {
-			return new ArrayList<String>(pages.subList(0, 9));
+		if (pages.size() > 19) {
+			return new ArrayList<String>(pages.subList(0, 19));
 		}
 		return pages;
 	}
